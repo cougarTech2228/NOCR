@@ -464,11 +464,12 @@ public class Scouting
 	private int[] getSheetValues(int[][] sampleRegion, byte[][] pixelMap)
 	{
 		int[] result = new int[sampleRegion.length];
-
-		for(int i = 0; i < sampleRegion.length; i++)
+		int i = 0;
+		
+		for(int[] aSampleRegion : sampleRegion)
 		{
-			result[i] = getChecked(sampleRegion[i][0], sampleRegion[i][1], sampleRegion[i][2], sampleRegion[i][3],
-					pixelMap);
+			result[i] = getChecked(aSampleRegion[0], aSampleRegion[1], aSampleRegion[2], aSampleRegion[3], pixelMap);
+			i++;
 		}
 
 		return result;
