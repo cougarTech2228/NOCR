@@ -2,5 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/morena_license.jar"/>
+	<classpathentry kind="lib" path="lib/morena7_osx.jar"/>
+	<classpathentry kind="lib" path="lib/morena7_win.jar"/>
+	<classpathentry kind="lib" path="lib/morena7.jar"/>
+	<classpathentry kind="lib" path="lib/opencsv-3.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
