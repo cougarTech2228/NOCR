@@ -15,40 +15,22 @@ import com.opencsv.CSVWriter;
 public class Scouting
 {
 
-	int[][] sampleRegion =
-	{
-			{ 1, 1, 5, 5 },
-			{ 1, 10, 5, 5 },
-			{ 1, 19, 5, 5 },
-			{ 10, 1, 5, 5 },
-			{ 10, 10, 5, 5 },
-			{ 10, 19, 5, 5 },
-			{ 19, 1, 5, 5 },
-			{ 19, 10, 5, 5 },
-			{ 19, 19, 5, 5 } };
+	int[][] sampleRegion = { { 1, 1, 5, 5 }, { 1, 10, 5, 5 }, { 1, 19, 5, 5 }, { 10, 1, 5, 5 }, { 10, 10, 5, 5 },
+			{ 10, 19, 5, 5 }, { 19, 1, 5, 5 }, { 19, 10, 5, 5 }, { 19, 19, 5, 5 } };
 
-	String[][] csvHeader =
-	{
-			{ "Team", "Match", "field1" },
-			{ "Team", "field1", "field2" } };
-	
-	String[][] directoryConfig =
-		{
-				{"/pitToBeScanned", "dir"},
-				{"/pitScanned", "dir"},
-				{"/matchToBeScanned", "dir"},
-				{"/matchScanned", "dir"},
-				{"/pitData.csv", "csv"},
-				{"/matchData.csv", "csv"}
-		};
+	String[][] csvHeader = { { "Team", "Match", "field1" }, { "Team", "field1", "field2" } };
+
+	String[][] directoryConfig = { { "/pitToBeScanned", "dir" }, { "/pitScanned", "dir" },
+			{ "/matchToBeScanned", "dir" }, { "/matchScanned", "dir" }, { "/pitData.csv", "csv" },
+			{ "/matchData.csv", "csv" } };
 
 	public static void main(String[] args)
 	{
 		Scouting scouting = new Scouting();
-		//Scanner scanner = new Scanner();
-		
-		//System.out.println(scouting.directorySetup("C:/Users/cougartech/Documents/Scouting_Sheet"));
-		//scouting.setupDirectory("C:/Users/cougartech/Documents/Scouting_Sheet");
+		// Scanner scanner = new Scanner();
+
+		// System.out.println(scouting.directorySetup("C:/Users/cougartech/Documents/Scouting_Sheet"));
+		// scouting.setupDirectory("C:/Users/cougartech/Documents/Scouting_Sheet");
 	}
 
 	/**
@@ -65,7 +47,7 @@ public class Scouting
 		int lastIndex = 0;
 		int count = 0;
 
-		while (lastIndex != -1)
+		while(lastIndex != -1)
 		{
 			lastIndex = str.indexOf(findStr, lastIndex);
 
@@ -89,7 +71,7 @@ public class Scouting
 	private boolean directorySetup(String baseDir)
 	{
 		boolean result = true;
-		
+
 		for(int i = 0; i < directoryConfig.length; i++)
 		{
 			File file = new File(baseDir + directoryConfig[i][0]);
@@ -100,10 +82,10 @@ public class Scouting
 				break;
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	@SuppressWarnings("unused")
 	/**
 	 * Creates folders and files that NOCR relies on if not existing
@@ -120,95 +102,98 @@ public class Scouting
 			{
 				switch(directoryConfig[i][1].toLowerCase())
 				{
-					case "dir":
-						file.mkdir();
-						break;
-						
-					case "csv":
-						try
-						{
-							file.createNewFile();
-						}
-						catch(IOException e)
-						{
-							e.printStackTrace();
-						}
-						break;
-						
-					default:
-						break;					
+				case "dir":
+					file.mkdir();
+					break;
+
+				case "csv":
+					try
+					{
+						file.createNewFile();
+					}
+					catch(IOException e)
+					{
+						e.printStackTrace();
+					}
+					break;
+
+				default:
+					break;
 				}
 			}
 		}
 	}
 
 	/**
-	 * checks whether an expression is valid according to existing commands and guidelines
-	 * @param expression expression to be evaluated
+	 * checks whether an expression is valid according to existing commands and
+	 * guidelines
+	 * 
+	 * @param expression
+	 *            expression to be evaluated
 	 * @return true-valid expression false-invalid expression
 	 */
 	@SuppressWarnings("unused")
 	private boolean verifyExpression(String expression)
 	{
 		boolean result = false;
-		
+
 		if(stringContains(expression, ":") == 1)
 		{
 			String[] splitExpression = expression.split(":", 2);
-			
+
 			switch(splitExpression[0].toLowerCase())
 			{
-				case "sum":
-					result = verifyRegionSet(splitExpression[1]);
-					break;
-					
-				case "value":
-					result = verifyRegion(splitExpression[1]);
-					break;
-					
-				case "blank":
-					result = (splitExpression[1] != null) ? true : false;
-					break;
-			
-				default:
-					result = false;
-					break;
-			}		
+			case "sum":
+				result = verifyRegionSet(splitExpression[1]);
+				break;
+
+			case "value":
+				result = verifyRegion(splitExpression[1]);
+				break;
+
+			case "blank":
+				result = (splitExpression[1] != null);
+				break;
+
+			default:
+				result = false;
+				break;
+			}
 		}
-		
+
 		return result;
 	}
-	
+
 	private boolean verifyRegionSet(String regionSet)
 	{
 		boolean result = false;
-		
+
 		if(stringContains(regionSet, ",") > 0)
 		{
 			String[] splitRegionSet = regionSet.split(",");
-			
+
 			for(int i = 0; i < splitRegionSet.length; i++)
 			{
-				result = (Integer.valueOf(splitRegionSet[i]) < sampleRegion.length) ? true : false;
+				result = (Integer.valueOf(splitRegionSet[i]) < sampleRegion.length);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	private boolean verifyRegion(String region)
 	{
 		boolean result = false;
-		
+
 		try
 		{
-			result = (Integer.valueOf(region) < sampleRegion.length) ? true : false;
+			result = (Integer.valueOf(region) < sampleRegion.length);
 		}
 		catch(NumberFormatException ex)
 		{
 			result = false;
 		}
-		
+
 		return result;
 	}
 
@@ -222,10 +207,7 @@ public class Scouting
 		ArrayList<String> availableSheets = getSheetFiles(toBeScannedDir);
 		File toBeScanned = new File(toBeScannedDir + "/" + availableSheets.get(0));
 
-		String[][] dataSets =
-		{
-				{ "low goal", "SUM:1,2" },
-				{ "reach", "VALUE:0" } };
+		String[][] dataSets = { { "low goal", "SUM:1,2" }, { "reach", "VALUE:0" } };
 
 		int[] result = new int[2];
 
@@ -259,11 +241,7 @@ public class Scouting
 	private void scanAvailableSheets(String toBeScannedDir, String scannedDir) throws IOException
 	{
 		ArrayList<String> availableSheets = getSheetFiles(toBeScannedDir);
-		int[][] sampleRegion =
-		{
-				{ 650, 475, 10, 10 },
-				{ 650, 530, 10, 10 },
-				{ 650, 600, 10, 10 } };
+		int[][] sampleRegion = { { 650, 475, 10, 10 }, { 650, 530, 10, 10 }, { 650, 600, 10, 10 } };
 
 		for(int i = 0; i < availableSheets.size(); i++)
 		{
@@ -289,8 +267,7 @@ public class Scouting
 					+ Integer.toString(decodeSevenSegment(sheetValues[35], sheetValues[36], sheetValues[37],
 							sheetValues[38], sheetValues[39], sheetValues[40], sheetValues[41]));
 
-			String[] values =
-			{ team, match, "01", "02" };
+			String[] values = { team, match, "01", "02" };
 
 			// Appends value to the CSV and closes the FileWriter
 			csvWriter.writeNext(values, false);
@@ -301,10 +278,6 @@ public class Scouting
 			File scanned = new File(scannedDir + "/" + team + "_" + match + ".jpg");
 			toBeScanned.renameTo(newScanned);
 			Files.move(newScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-			// Free up some space
-			toBeScanned = null;
-			scanned = null;
 		}
 
 	}
@@ -416,31 +389,50 @@ public class Scouting
 		int result = 0;
 		String bits = Integer.toString(a) + Integer.toString(b) + Integer.toString(c) + Integer.toString(d)
 				+ Integer.toString(e) + Integer.toString(f) + Integer.toString(g);
-		
+
 		switch(bits)
 		{
-			case "0110000":
-				result = 1;
-			case "1101101":
-				result = 2;
-			case "1111001":
-				result = 3;
-			case "0110011":
-				result = 4;
-			case "1011011":
-				result = 5;
-			case "1011111":
-				result = 6;
-			case "1110000":
-				result = 7;
-			case "1111111":
-				result = 8;
-			case "1111011":
-				result = 9;
-			default:
-				result = 0;
+		case "0110000":
+			result = 1;
+			break;
+
+		case "1101101":
+			result = 2;
+			break;
+
+		case "1111001":
+			result = 3;
+			break;
+
+		case "0110011":
+			result = 4;
+			break;
+
+		case "1011011":
+			result = 5;
+			break;
+
+		case "1011111":
+			result = 6;
+			break;
+
+		case "1110000":
+			result = 7;
+			break;
+
+		case "1111111":
+			result = 8;
+			break;
+
+		case "1111011":
+			result = 9;
+			break;
+
+		default:
+			result = 0;
+			break;
 		}
-		
+
 		return result;
 	}
 
@@ -481,7 +473,8 @@ public class Scouting
 	}
 
 	/**
-	 * getPixelMap 
+	 * getPixelMap
+	 * 
 	 * @param filePath
 	 *            Specific directory of image
 	 * @return 2D byte array of pixel data (0- white 1- black)
@@ -500,7 +493,7 @@ public class Scouting
 
 		byte[][] pixels = new byte[img.getWidth()][];
 		FastRGB imgRGB = new FastRGB(img);
-		
+
 		for(int x = 0; x < img.getWidth(); x++)
 		{
 			pixels[x] = new byte[img.getHeight()];
