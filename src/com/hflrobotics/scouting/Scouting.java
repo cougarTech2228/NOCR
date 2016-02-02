@@ -15,22 +15,39 @@ import com.opencsv.CSVWriter;
 public class Scouting
 {
 
-	int[][] sampleRegion = { { 1, 1, 5, 5 }, { 1, 10, 5, 5 }, { 1, 19, 5, 5 }, { 10, 1, 5, 5 }, { 10, 10, 5, 5 },
-			{ 10, 19, 5, 5 }, { 19, 1, 5, 5 }, { 19, 10, 5, 5 }, { 19, 19, 5, 5 } };
+	int[][] sampleRegion =
+	{
+			{ 1, 1, 5, 5 },
+			{ 1, 10, 5, 5 },
+			{ 1, 19, 5, 5 },
+			{ 10, 1, 5, 5 },
+			{ 10, 10, 5, 5 },
+			{ 10, 19, 5, 5 },
+			{ 19, 1, 5, 5 },
+			{ 19, 10, 5, 5 },
+			{ 19, 19, 5, 5 } };
 
-	String[][] csvHeader = { { "Team", "Match", "field1" }, { "Team", "field1", "field2" } };
+	String[][] csvHeader =
+	{
+			{ "Team", "Match", "field1" },
+			{ "Team", "field1", "field2" } };
 
-	String[][] directoryConfig = { { "/pitToBeScanned", "dir" }, { "/pitScanned", "dir" },
-			{ "/matchToBeScanned", "dir" }, { "/matchScanned", "dir" }, { "/pitData.csv", "csv" },
+	String[][] directoryConfig =
+	{
+			{ "/pitToBeScanned", "dir" },
+			{ "/pitScanned", "dir" },
+			{ "/matchToBeScanned", "dir" },
+			{ "/matchScanned", "dir" },
+			{ "/pitData.csv", "csv" },
 			{ "/matchData.csv", "csv" } };
 
 	public static void main(String[] args)
 	{
 		Scouting scouting = new Scouting();
 		// Scanner scanner = new Scanner();
-
-		// System.out.println(scouting.directorySetup("C:/Users/cougartech/Documents/Scouting_Sheet"));
-		// scouting.setupDirectory("C:/Users/cougartech/Documents/Scouting_Sheet");
+		System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));
+		scouting.setupDirectory("C:/Users/Michael/Documents/Scouting");
+		System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));
 	}
 
 	/**
@@ -72,9 +89,9 @@ public class Scouting
 	{
 		boolean result = true;
 
-		for(int i = 0; i < directoryConfig.length; i++)
+		for(String[] aDirectoryConfig : directoryConfig)
 		{
-			File file = new File(baseDir + directoryConfig[i][0]);
+			File file = new File(baseDir + aDirectoryConfig[0]);
 
 			if(!file.exists())
 			{
@@ -82,7 +99,7 @@ public class Scouting
 				break;
 			}
 		}
-
+		
 		return result;
 	}
 
@@ -94,31 +111,31 @@ public class Scouting
 	 */
 	private void setupDirectory(String baseDir)
 	{
-		for(int i = 0; i < directoryConfig.length; i++)
+		for(String[] aDirectoryConfig : directoryConfig)
 		{
-			File file = new File(baseDir + directoryConfig[i][0]);
+			File file = new File(baseDir + aDirectoryConfig[0]);
 
 			if(!file.exists())
 			{
-				switch(directoryConfig[i][1].toLowerCase())
+				switch(aDirectoryConfig[1].toLowerCase())
 				{
-				case "dir":
-					file.mkdir();
-					break;
+					case "dir":
+						file.mkdir();
+						break;
 
-				case "csv":
-					try
-					{
-						file.createNewFile();
-					}
-					catch(IOException e)
-					{
-						e.printStackTrace();
-					}
-					break;
+					case "csv":
+						try
+						{
+							file.createNewFile();
+						}
+						catch(IOException e)
+						{
+							e.printStackTrace();
+						}
+						break;
 
-				default:
-					break;
+					default:
+						break;
 				}
 			}
 		}
@@ -143,21 +160,21 @@ public class Scouting
 
 			switch(splitExpression[0].toLowerCase())
 			{
-			case "sum":
-				result = verifyRegionSet(splitExpression[1]);
-				break;
+				case "sum":
+					result = verifyRegionSet(splitExpression[1]);
+					break;
 
-			case "value":
-				result = verifyRegion(splitExpression[1]);
-				break;
+				case "value":
+					result = verifyRegion(splitExpression[1]);
+					break;
 
-			case "blank":
-				result = (splitExpression[1] != null);
-				break;
+				case "blank":
+					result = (splitExpression[1] != null);
+					break;
 
-			default:
-				result = false;
-				break;
+				default:
+					result = false;
+					break;
 			}
 		}
 
@@ -172,9 +189,9 @@ public class Scouting
 		{
 			String[] splitRegionSet = regionSet.split(",");
 
-			for(int i = 0; i < splitRegionSet.length; i++)
+			for(String aSplitRegionSet : splitRegionSet)
 			{
-				result = (Integer.valueOf(splitRegionSet[i]) < sampleRegion.length);
+				result = (Integer.valueOf(aSplitRegionSet) < sampleRegion.length);
 			}
 		}
 
@@ -207,7 +224,10 @@ public class Scouting
 		ArrayList<String> availableSheets = getSheetFiles(toBeScannedDir);
 		File toBeScanned = new File(toBeScannedDir + "/" + availableSheets.get(0));
 
-		String[][] dataSets = { { "low goal", "SUM:1,2" }, { "reach", "VALUE:0" } };
+		String[][] dataSets =
+		{
+				{ "low goal", "SUM:1,2" },
+				{ "reach", "VALUE:0" } };
 
 		int[] result = new int[2];
 
@@ -241,7 +261,11 @@ public class Scouting
 	private void scanAvailableSheets(String toBeScannedDir, String scannedDir) throws IOException
 	{
 		ArrayList<String> availableSheets = getSheetFiles(toBeScannedDir);
-		int[][] sampleRegion = { { 650, 475, 10, 10 }, { 650, 530, 10, 10 }, { 650, 600, 10, 10 } };
+		int[][] sampleRegion =
+		{
+				{ 650, 475, 10, 10 },
+				{ 650, 530, 10, 10 },
+				{ 650, 600, 10, 10 } };
 
 		for(int i = 0; i < availableSheets.size(); i++)
 		{
@@ -267,7 +291,8 @@ public class Scouting
 					+ Integer.toString(decodeSevenSegment(sheetValues[35], sheetValues[36], sheetValues[37],
 							sheetValues[38], sheetValues[39], sheetValues[40], sheetValues[41]));
 
-			String[] values = { team, match, "01", "02" };
+			String[] values =
+			{ team, match, "01", "02" };
 
 			// Appends value to the CSV and closes the FileWriter
 			csvWriter.writeNext(values, false);
@@ -392,45 +417,45 @@ public class Scouting
 
 		switch(bits)
 		{
-		case "0110000":
-			result = 1;
-			break;
+			case "0110000":
+				result = 1;
+				break;
 
-		case "1101101":
-			result = 2;
-			break;
+			case "1101101":
+				result = 2;
+				break;
 
-		case "1111001":
-			result = 3;
-			break;
+			case "1111001":
+				result = 3;
+				break;
 
-		case "0110011":
-			result = 4;
-			break;
+			case "0110011":
+				result = 4;
+				break;
 
-		case "1011011":
-			result = 5;
-			break;
+			case "1011011":
+				result = 5;
+				break;
 
-		case "1011111":
-			result = 6;
-			break;
+			case "1011111":
+				result = 6;
+				break;
 
-		case "1110000":
-			result = 7;
-			break;
+			case "1110000":
+				result = 7;
+				break;
 
-		case "1111111":
-			result = 8;
-			break;
+			case "1111111":
+				result = 8;
+				break;
 
-		case "1111011":
-			result = 9;
-			break;
+			case "1111011":
+				result = 9;
+				break;
 
-		default:
-			result = 0;
-			break;
+			default:
+				result = 0;
+				break;
 		}
 
 		return result;
@@ -521,11 +546,11 @@ public class Scouting
 		String[] fileList = file.list();
 		ArrayList<String> sheetFiles = new ArrayList<String>(0);
 
-		for(int i = 0; i < fileList.length; i++)
+		for(String aFileList : fileList)
 		{
-			if(fileList[i].substring(fileList[i].length() - 4).equalsIgnoreCase(".jpg"))
+			if(aFileList.substring(aFileList.length() - 4).equalsIgnoreCase(".jpg"))
 			{
-				sheetFiles.add(fileList[i]);
+				sheetFiles.add(aFileList);
 			}
 		}
 

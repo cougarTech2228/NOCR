@@ -20,7 +20,7 @@ public class FastRGB
 		height = image.getHeight();
 		hasAlphaChannel = image.getAlphaRaster() != null;
 		pixelLength = 3;
-		
+
 		if(hasAlphaChannel)
 		{
 			pixelLength = 4;
@@ -31,7 +31,7 @@ public class FastRGB
 	{
 		int pos = (y * pixelLength * width) + (x * pixelLength);
 		int argb = -16777216; // 255 alpha
-		
+
 		if(hasAlphaChannel)
 		{
 			argb = (((int) pixels[pos++] & 0xff) << 24); // alpha
