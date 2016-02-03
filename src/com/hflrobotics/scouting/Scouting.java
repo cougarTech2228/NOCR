@@ -41,15 +41,63 @@ public class Scouting
 			{ "/pitData.csv", "csv" },
 			{ "/matchData.csv", "csv" } };
 
+	String[][] cropSection =
+	{ 
+			{"comment", "10", "10", "5", "5"}, 
+			{"comment2", "19", "19", "5", "5"} };
+
 	public static void main(String[] args)
 	{
 		Scouting scouting = new Scouting();
 		// Scanner scanner = new Scanner();
-		System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));
+		File file = new File("C:/Users/Michael/Documents/Scouting/matchToBeScanned/testCard.jpg");
+		scouting.extractCropSection(file, "C:/Users/Michael/Documents/Scouting/matchScanned");
+		
+		/*System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));
 		scouting.setupDirectory("C:/Users/Michael/Documents/Scouting");
-		System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));
+		System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));*/
 	}
 
+	private void extractCropSection(File file, String outputDir)
+	{
+		BufferedImage img = null;
+		try
+		{
+			img = ImageIO.read(file);
+		}
+		catch(IOException ex)
+		{
+
+		}
+		
+		for(String[] aCropSection : cropSection)
+		{
+			File output = new File(outputDir + "/" + aCropSection[0] + ".jpg");
+			
+			try
+			{
+				output.createNewFile();
+			}
+			catch(IOException e1)
+			{
+				e1.printStackTrace();
+			}
+			
+			try
+			{
+				ImageIO.write(img.getSubimage(Integer.valueOf(aCropSection[1]), Integer.valueOf(aCropSection[2]), Integer.valueOf(aCropSection[3]), Integer.valueOf(aCropSection[4])), "jpg", output);
+			}
+			catch(NumberFormatException ex2)
+			{
+				ex2.printStackTrace();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}	
+	
 	/**
 	 * Get number of occurrences of a string with in another string
 	 * 
@@ -99,7 +147,7 @@ public class Scouting
 				break;
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -167,13 +215,13 @@ public class Scouting
 				case "value":
 					result = verifyRegion(splitExpression[1]);
 					break;
-					
+
 				case "select":
 					break;
-					
+
 				case "team":
 					break;
-					
+
 				case "match":
 					break;
 
@@ -474,7 +522,7 @@ public class Scouting
 	{
 		int[] result = new int[sampleRegion.length];
 		int i = 0;
-		
+
 		for(int[] aSampleRegion : sampleRegion)
 		{
 			result[i] = getChecked(aSampleRegion[0], aSampleRegion[1], aSampleRegion[2], aSampleRegion[3], pixelMap);
