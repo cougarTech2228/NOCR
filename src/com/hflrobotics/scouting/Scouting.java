@@ -167,6 +167,15 @@ public class Scouting
 				case "value":
 					result = verifyRegion(splitExpression[1]);
 					break;
+					
+				case "select":
+					break;
+					
+				case "team":
+					break;
+					
+				case "match":
+					break;
 
 				case "blank":
 					result = (splitExpression[1] != null);
