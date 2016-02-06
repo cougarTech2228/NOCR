@@ -49,8 +49,8 @@ public class Scouting
 	public static void main(String[] args)
 	{
 		Scouting scouting = new Scouting();
-		Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting_Sheet/config.json");
-		
+		Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting_Sheet/config.xml");
+		config.test();
 		
 		// Scanner scanner = new Scanner();
 		//File file = new File("C:/Users/Michael/Documents/Scouting/matchToBeScanned/testCard.jpg");
