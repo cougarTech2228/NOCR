@@ -50,9 +50,7 @@ public class Scouting
 	{
 		Scouting scouting = new Scouting();
 		Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting_Sheet/config.json");
-		//System.out.println(config.getConfigSetting("imageType"));
-		System.out.println(config.getConfigSettingArray("fileStruct", "file")[0]);
-		//config.test("fileStruct", "file");
+		
 		
 		// Scanner scanner = new Scanner();
 		//File file = new File("C:/Users/Michael/Documents/Scouting/matchToBeScanned/testCard.jpg");
