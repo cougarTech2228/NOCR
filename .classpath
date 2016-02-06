@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/morena7_win.jar"/>
 	<classpathentry kind="lib" path="lib/morena7.jar"/>
 	<classpathentry kind="lib" path="lib/opencsv-3.6.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -49,10 +49,14 @@ public class Scouting
 	public static void main(String[] args)
 	{
 		Scouting scouting = new Scouting();
-		// Scanner scanner = new Scanner();
-		File file = new File("C:/Users/Michael/Documents/Scouting/matchToBeScanned/testCard.jpg");
-		scouting.extractCropSection(file, "C:/Users/Michael/Documents/Scouting/matchScanned");
+		Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting_Sheet/config.json");
+		//System.out.println(config.getConfigSetting("imageType"));
+		System.out.println(config.getConfigSettingArray("fileStruct", "file")[0]);
+		//config.test("fileStruct", "file");
 		
+		// Scanner scanner = new Scanner();
+		//File file = new File("C:/Users/Michael/Documents/Scouting/matchToBeScanned/testCard.jpg");
+		//scouting.extractCropSection(file, "C:/Users/Michael/Documents/Scouting/matchScanned");
 		/*System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));
 		scouting.setupDirectory("C:/Users/Michael/Documents/Scouting");
 		System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));*/
