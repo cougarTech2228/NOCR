@@ -14,7 +14,6 @@ public class FastRGB
 
 	FastRGB(BufferedImage image)
 	{
-
 		pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 		width = image.getWidth();
 		height = image.getHeight();

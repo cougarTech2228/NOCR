@@ -17,6 +17,7 @@ public class Configuration
 	
 	public Configuration(String configLocation)
 	{
+		//Creates DOM structure based on the config xml
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try
 		{
@@ -29,6 +30,9 @@ public class Configuration
 		}
 	}
 	
+	/**
+	 * Do not use in production
+	 */
 	public void test()
 	{
 		System.out.println(doc.getElementsByTagName("match").item(0));
