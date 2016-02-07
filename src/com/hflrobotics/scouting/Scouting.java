@@ -234,6 +234,11 @@ public class Scouting
 		return result;
 	}
 
+	/**
+	 * Ensures regionSet is formatted properly and does not specify any out of bounds regions
+	 * @param regionSet specific regionSet
+	 * @return whether regionSet is valid
+	 */
 	private boolean verifyRegionSet(String regionSet)
 	{
 		boolean result = true;
@@ -256,6 +261,11 @@ public class Scouting
 		return result;
 	}
 
+	/**
+	 * Ensures region is formatted properly and does not specify any out of bounds regions
+	 * @param region specific region
+	 * @return whether region is valid
+	 */
 	private boolean verifyRegion(String region)
 	{
 		boolean result = false;
