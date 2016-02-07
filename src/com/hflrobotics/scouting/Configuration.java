@@ -3,12 +3,9 @@ package com.hflrobotics.scouting;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 public class Configuration
 {
@@ -17,14 +14,13 @@ public class Configuration
 	
 	public Configuration(String configLocation)
 	{
-		//Creates DOM structure based on the config xml
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		try
+		File configFile = new File(configLocation);
+        SAXBuilder saxBuilder = new SAXBuilder();
+        try
 		{
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			doc = builder.parse(new File(configLocation));
-		} 
-		catch (ParserConfigurationException | SAXException | IOException e)
+			doc = saxBuilder.build(configFile);
+		}
+		catch(JDOMException | IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -35,6 +31,6 @@ public class Configuration
 	 */
 	public void test()
 	{
-		System.out.println(doc.getElementsByTagName("match").item(0));
+	
 	}
 }
