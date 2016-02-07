@@ -15,6 +15,7 @@ import com.opencsv.CSVWriter;
 public class Scouting
 {
 
+	// x, y, w, h
 	int[][] sampleRegion =
 	{
 			{ 1, 1, 5, 5 },
@@ -27,11 +28,7 @@ public class Scouting
 			{ 19, 10, 5, 5 },
 			{ 19, 19, 5, 5 } };
 
-	String[][] csvHeader =
-	{
-			{ "Team", "Match", "field1" },
-			{ "Team", "field1", "field2" } };
-
+	// itemLocation, type
 	String[][] directoryConfig =
 	{
 			{ "/pitToBeScanned", "dir" },
@@ -41,6 +38,7 @@ public class Scouting
 			{ "/pitData.csv", "csv" },
 			{ "/matchData.csv", "csv" } };
 
+	// fileName, x, y, w, h
 	String[][] cropSection =
 	{ 
 			{"comment", "10", "10", "5", "5"}, 
@@ -51,15 +49,14 @@ public class Scouting
 		Scouting scouting = new Scouting();
 		Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting_Sheet/config.xml");
 		config.test();
-		
-		// Scanner scanner = new Scanner();
-		//File file = new File("C:/Users/Michael/Documents/Scouting/matchToBeScanned/testCard.jpg");
-		//scouting.extractCropSection(file, "C:/Users/Michael/Documents/Scouting/matchScanned");
-		/*System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));
-		scouting.setupDirectory("C:/Users/Michael/Documents/Scouting");
-		System.out.println(scouting.directorySetup("C:/Users/Michael/Documents/Scouting"));*/
 	}
 
+	
+	/**
+	 * Takes an image and creates cropped photos based on the specified cropSection 2D array
+	 * @param file the File to crop from
+	 * @param outputDir the directory of where to place the image
+	 */
 	private void extractCropSection(File file, String outputDir)
 	{
 		BufferedImage img = null;
@@ -85,17 +82,14 @@ public class Scouting
 				e1.printStackTrace();
 			}
 			
+			//Write a sub image of the original to the directory
 			try
 			{
 				ImageIO.write(img.getSubimage(Integer.valueOf(aCropSection[1]), Integer.valueOf(aCropSection[2]), Integer.valueOf(aCropSection[3]), Integer.valueOf(aCropSection[4])), "jpg", output);
 			}
-			catch(NumberFormatException ex2)
+			catch(NumberFormatException | IOException ex)
 			{
-				ex2.printStackTrace();
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
+				ex.printStackTrace();
 			}
 		}
 	}	
@@ -103,10 +97,8 @@ public class Scouting
 	/**
 	 * Get number of occurrences of a string with in another string
 	 * 
-	 * @param str
-	 *            String to search
-	 * @param findStr
-	 *            String to look for
+	 * @param str String to search
+	 * @param findStr String to look for
 	 * @return Count of occurrences
 	 */
 	private int stringContains(String str, String findStr)
@@ -114,6 +106,7 @@ public class Scouting
 		int lastIndex = 0;
 		int count = 0;
 
+		//For every occurrence of findStr in str, increase the count
 		while(lastIndex != -1)
 		{
 			lastIndex = str.indexOf(findStr, lastIndex);
@@ -169,10 +162,12 @@ public class Scouting
 			{
 				switch(aDirectoryConfig[1].toLowerCase())
 				{
+					//Directories will just be created
 					case "dir":
 						file.mkdir();
 						break;
 
+					//CSVs will be created
 					case "csv":
 						try
 						{
@@ -195,8 +190,7 @@ public class Scouting
 	 * checks whether an expression is valid according to existing commands and
 	 * guidelines
 	 * 
-	 * @param expression
-	 *            expression to be evaluated
+	 * @param expression string to be evaluated
 	 * @return true-valid expression false-invalid expression
 	 */
 	@SuppressWarnings("unused")
@@ -228,7 +222,7 @@ public class Scouting
 					break;
 
 				case "blank":
-					result = (splitExpression[1] != null);
+					result = (splitExpression[1] != null); //Ensures there is no region set specified
 					break;
 
 				default:
@@ -242,15 +236,20 @@ public class Scouting
 
 	private boolean verifyRegionSet(String regionSet)
 	{
-		boolean result = false;
+		boolean result = true;
 
 		if(stringContains(regionSet, ",") > 0)
 		{
 			String[] splitRegionSet = regionSet.split(",");
 
+			//Makes sure specified region exists
 			for(String aSplitRegionSet : splitRegionSet)
 			{
-				result = (Integer.valueOf(aSplitRegionSet) < sampleRegion.length);
+				if(Integer.valueOf(aSplitRegionSet) >= sampleRegion.length)
+				{
+					result = false;
+					break;
+				}				
 			}
 		}
 
@@ -261,6 +260,7 @@ public class Scouting
 	{
 		boolean result = false;
 
+		//Makes sure specified region exists
 		try
 		{
 			result = (Integer.valueOf(region) < sampleRegion.length);
@@ -283,13 +283,13 @@ public class Scouting
 		ArrayList<String> availableSheets = getSheetFiles(toBeScannedDir);
 		File toBeScanned = new File(toBeScannedDir + "/" + availableSheets.get(0));
 
+		//Test set (header, expression)
 		String[][] dataSets =
 		{
 				{ "low goal", "SUM:1,2" },
 				{ "reach", "VALUE:0" } };
 
 		int[] result = new int[2];
-
 		byte[][] pixelMap = getPixelMap(toBeScanned);
 		int[] sheetValues = getSheetValues(sampleRegion, pixelMap);
 
@@ -312,6 +312,7 @@ public class Scouting
 			}
 		}
 
+		//Test print out
 		System.out.println(result[0] + "  " + result[1]);
 	}
 
@@ -468,9 +469,21 @@ public class Scouting
 						values[18], values[7]));
 	}
 
+	/**
+	 * Converts the state of a seven segment to an integer representation
+	 * @param a state of the a segment (0- false 1- true)
+	 * @param b state of the b segment (0- false 1- true)
+	 * @param c state of the c segment (0- false 1- true)
+	 * @param d state of the d segment (0- false 1- true)
+	 * @param e state of the e segment (0- false 1- true)
+	 * @param f state of the f segment (0- false 1- true)
+	 * @param g state of the g segment (0- false 1- true)
+	 * @return integer value of the display
+	 */
 	private int decodeSevenSegment(int a, int b, int c, int d, int e, int f, int g)
 	{
 		int result = 0;
+		//Creates a string with the segments concatenated
 		String bits = Integer.toString(a) + Integer.toString(b) + Integer.toString(c) + Integer.toString(d)
 				+ Integer.toString(e) + Integer.toString(f) + Integer.toString(g);
 
@@ -520,6 +533,12 @@ public class Scouting
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param sampleRegion 2D array that specifies arrays
+	 * @param pixelMap the byte array that represents the image
+	 * @return
+	 */
 	private int[] getSheetValues(int[][] sampleRegion, byte[][] pixelMap)
 	{
 		int[] result = new int[sampleRegion.length];
@@ -534,11 +553,21 @@ public class Scouting
 		return result;
 	}
 
+	/**
+	 * Checks the average amount of black pixels in a region to determine whether it is checked
+	 * @param x the x position of the upper left corner
+	 * @param y the y position of the upper left corner
+	 * @param w the width of the region
+	 * @param h the height of the region
+	 * @param pixelMap the byte array that represents the image
+	 * @return 0- unchecked 1- checked
+	 */
 	private int getChecked(int x, int y, int w, int h, byte[][] pixelMap)
 	{
 		long area = w * h;
 		long sigma = 0;
 
+		//Sums up the amount of black pixels
 		for(int xSample = x; xSample < x + w; xSample++)
 		{
 			for(int ySample = y; ySample < y + h; ySample++)
@@ -560,8 +589,7 @@ public class Scouting
 	/**
 	 * getPixelMap
 	 * 
-	 * @param filePath
-	 *            Specific directory of image
+	 * @param filePath specific directory of image
 	 * @return 2D byte array of pixel data (0- white 1- black)
 	 */
 	private byte[][] getPixelMap(File file)
@@ -585,6 +613,7 @@ public class Scouting
 
 			for(int y = 0; y < img.getHeight(); y++)
 			{
+				//If the pixel is not white (0xFFFFFFFF -- 0) then it is black (1)
 				pixels[x][y] = (byte) (imgRGB.getRGB(x, y) == 0xFFFFFFFF ? 0 : 1);
 			}
 		}
@@ -595,10 +624,8 @@ public class Scouting
 	/**
 	 * getSheetFiles
 	 * 
-	 * @param filePath
-	 *            Specified directory to look in
-	 * @return ArrayList<String> of all file names in the directory that end
-	 *         with .jpg
+	 * @param filePath specified directory to look in
+	 * @return all file names in the directory that end with .jpg
 	 */
 	public ArrayList<String> getSheetFiles(String filePath)
 	{
