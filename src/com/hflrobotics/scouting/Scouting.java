@@ -47,7 +47,7 @@ public class Scouting
 	public static void main(String[] args)
 	{
 		Scouting scouting = new Scouting();
-		Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting_Sheet/config.xml");
+		Configuration config = new Configuration("C:/Users/Michael/Documents/Scouting/config.xml");
 		config.test();
 	}
 
