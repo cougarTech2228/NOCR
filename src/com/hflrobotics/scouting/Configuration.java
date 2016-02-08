@@ -3,6 +3,8 @@ package com.hflrobotics.scouting;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+
 import org.jdom2.DataConversionException;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -10,8 +12,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class Configuration
-{
-	
+{	
 	Document doc;
 	int regionSize;
 	ArrayList<Integer[]> matchRegions = new ArrayList<Integer[]>(0);
@@ -51,9 +52,6 @@ public class Configuration
 		{
 			e.printStackTrace();
 		}
-		
-		//root.getChild("fileStruct").getChildren("file").get(0).getValue();
-		//System.out.print(root.getChild("fileStruct").getChildren("file").get(0).getAttributeValue("type"));
 	}
 	
 	/**

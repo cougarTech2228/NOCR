@@ -58,7 +58,7 @@ public class Scouting
 	 * @param file the File to crop from
 	 * @param outputDir the directory of where to place the image
 	 */
-	private void extractCropSection(File file, String outputDir)
+	private void extractCropSection(File file, String outputDir, String extractType)
 	{
 		BufferedImage img = null;
 		try
