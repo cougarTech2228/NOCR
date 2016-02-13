@@ -14,7 +14,6 @@ import com.opencsv.CSVWriter;
 
 public class Scouting
 {
-
 	ScannerInteface scanner = new ScannerInteface();
 	Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting/config.xml");
 	// x, y, w, h
