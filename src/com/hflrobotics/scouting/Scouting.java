@@ -47,9 +47,11 @@ public class Scouting
 	public static void main(String[] args)
 	{
 		Scouting scouting = new Scouting();
-		Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting/config.xml");
+		/*Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting/config.xml");
 		config.test();
-		System.out.println(config.matchCriteria.get(1)[0]);
+		System.out.println(config.matchCriteria.get(1)[0]);*/
+		ScannerInteface scanner = new ScannerInteface();
+		scanner.testFunc();
 	}
 
 	
