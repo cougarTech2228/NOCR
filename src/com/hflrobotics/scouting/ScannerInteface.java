@@ -39,15 +39,15 @@ public class ScannerInteface
 	 * @param dir directory to be scanned to
 	 * @param scanID instance number of the scanner
 	 */
-	public void scanToDir(String dir, int scanID)
+	public void scanToDir(String dir, int scanID, ArrayList<String> config)
 	{
 		ScanSession session = new ScanSession();
 		Scanner scanner = (Scanner) devices.get(scanID);
 		scanner.setMode(Scanner.BLACK_AND_WHITE);
-		scanner.setResolution(300);
-		scanner.setFrame(0, 0, 2550, 3300);
+		scanner.setResolution(Integer.valueOf(config.get(1)));
+		scanner.setFrame(0, 0, Integer.valueOf(config.get(2)), Integer.valueOf(config.get(3)));
 		scanner.setDuplexEnabled(false);
-		int feederUnit=scanner.getFeederFunctionalUnit();
+		int feederUnit = scanner.getFeederFunctionalUnit();
 		
 	    if(feederUnit < 0)
 	    {

@@ -15,6 +15,8 @@ import com.opencsv.CSVWriter;
 public class Scouting
 {
 
+	ScannerInteface scanner = new ScannerInteface();
+	Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting/config.xml");
 	// x, y, w, h
 	int[][] sampleRegion =
 	{
@@ -47,13 +49,21 @@ public class Scouting
 	public static void main(String[] args)
 	{
 		Scouting scouting = new Scouting();
-		/*Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting/config.xml");
-		config.test();
-		System.out.println(config.matchCriteria.get(1)[0]);*/
-		ScannerInteface scanner = new ScannerInteface();
-		scanner.scanToDir("C:/Users/cougartech/Documents/Scouting/matchToBeScanned/", 0);
+		GUI gui = new GUI();
 	}
 
+	public void scanPit()
+	{
+		config.test();
+		scanner.scanToDir("C:/Users/cougartech/Documents/Scouting/pitToBeScanned/", 0, config.scanSettings);
+	}
+	
+	public void scanMatch()
+	{
+		config.test();
+		scanner.scanToDir("C:/Users/cougartech/Documents/Scouting/matchToBeScanned/", 0, config.scanSettings);
+	}
+	
 	
 	/**
 	 * Takes an image and creates cropped photos based on the specified cropSection 2D array

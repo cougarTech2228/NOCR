@@ -15,12 +15,13 @@ public class Configuration
 {	
 	Document doc;
 	int regionSize;
-	ArrayList<Integer[]> matchRegions = new ArrayList<Integer[]>(0);
-	ArrayList<String[]> matchCriteria = new ArrayList<String[]>(0);
-	ArrayList<String[]> matchCropout = new ArrayList<String[]>(0);
-	ArrayList<Integer[]> pitRegions = new ArrayList<Integer[]>(0);
-	ArrayList<String[]> pitCriteria = new ArrayList<String[]>(0);
-	ArrayList<String[]> pitCropout = new ArrayList<String[]>(0);
+	public ArrayList<Integer[]> matchRegions = new ArrayList<Integer[]>(0);
+	public ArrayList<String[]> matchCriteria = new ArrayList<String[]>(0);
+	public ArrayList<String[]> matchCropout = new ArrayList<String[]>(0);
+	public ArrayList<Integer[]> pitRegions = new ArrayList<Integer[]>(0);
+	public ArrayList<String[]> pitCriteria = new ArrayList<String[]>(0);
+	public ArrayList<String[]> pitCropout = new ArrayList<String[]>(0);
+	public ArrayList<String> scanSettings = new ArrayList<String>(0);
 	
 	public Configuration(String configLocation)
 	{
@@ -41,17 +42,26 @@ public class Configuration
 	 */
 	public void test()
 	{
-		Element root = doc.getRootElement();
-		
 		try
 		{
 			loadMatchConfig();
 			loadPitConfig();
+			loadScanConfig();
 		} 
 		catch (DataConversionException e)
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	private void loadScanConfig()
+	{
+		Element root = doc.getRootElement().getChild("scan");
+		scanSettings.clear();
+		scanSettings.add(root.getChildText("scanner"));
+		scanSettings.add(root.getChildText("resolution"));
+		scanSettings.add(root.getChildText("width"));
+		scanSettings.add(root.getChildText("height"));
 	}
 	
 	/**
