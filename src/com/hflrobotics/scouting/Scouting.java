@@ -51,7 +51,7 @@ public class Scouting
 		config.test();
 		System.out.println(config.matchCriteria.get(1)[0]);*/
 		ScannerInteface scanner = new ScannerInteface();
-		scanner.testFunc();
+		scanner.scanToDir("C:/Users/cougartech/Documents/Scouting/matchToBeScanned/", 0);
 	}
 
 	

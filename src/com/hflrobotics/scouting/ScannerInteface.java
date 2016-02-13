@@ -31,48 +31,54 @@ public class ScannerInteface
 	 */
 	public void testFunc()
 	{
-		Scanner scanner = (Scanner) devices.get(0);
+
+	}
+
+	/**
+	 * Scan images from scanner and place them in a directory
+	 * @param dir directory to be scanned to
+	 * @param scanID instance number of the scanner
+	 */
+	public void scanToDir(String dir, int scanID)
+	{
+		ScanSession session = new ScanSession();
+		Scanner scanner = (Scanner) devices.get(scanID);
 		scanner.setMode(Scanner.BLACK_AND_WHITE);
 		scanner.setResolution(300);
 		scanner.setFrame(0, 0, 2550, 3300);
 		scanner.setDuplexEnabled(false);
-		/*try
-		{
-			BufferedImage bimage = SynchronousHelper.scanImage(scanner);
-			File outputfile = new File("C:/Users/cougartech/Documents/Scouting/test/" + Math.random() + ".png");
-		    ImageIO.write(bimage, "png", outputfile);
-		} 
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}*/
-		 int feederUnit=scanner.getFeederFunctionalUnit();
-		    if (feederUnit<0)
-		    {
-			      feederUnit=0; // 0 designates a default unit
-
-		    }
-		    
-		    ScanSession session=new ScanSession();
-		    try {
-		      session.startSession(scanner, feederUnit);
-		      File file=null; 
-		      while (null!=(file=session.getImageFile())) {
-		        
-		    	  BufferedImage bimage = SynchronousHelper.scanImage(scanner);
-					File outputfile = new File("C:/Users/cougartech/Documents/Scouting/test/" + Math.random() + ".png");
-				    ImageIO.write(bimage, "png", outputfile);
-		        
-		      }
-		    } catch (Exception ex) { // check if error is related to empty ADF
-		      if (session.isEmptyFeeder())
-		        System.out.println("No more sheets in the document feeder");
-		      else
-		        ex.printStackTrace();
-		    }
+		int feederUnit=scanner.getFeederFunctionalUnit();
 		
+	    if(feederUnit < 0)
+	    {
+		      feederUnit = 0;
+	    }
+		
+	    try
+	    {
+	      session.startSession(scanner, feederUnit);
+	      File file = null;
+	      
+	      while(null != (file=session.getImageFile()))
+	      {
+	    	  	BufferedImage bimage = ImageIO.read(file);
+				File outputfile = new File(dir + Math.random() + ".png");
+			    ImageIO.write(bimage, "png", outputfile);	        
+	      }
+	    } 
+	    catch (Exception ex)
+	    { 
+	      if (session.isEmptyFeeder())
+	      {
+		        System.out.println("No more sheets in the document feeder");
+	      }
+	      else
+	      {
+		        ex.printStackTrace();
+	      }
+	    }
 	}
-
+	
 	/**
 	 * Gets a list of all the scanners that were detected
 	 * @return all the scanners that were detected
