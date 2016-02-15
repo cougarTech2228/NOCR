@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/morena7.jar"/>
 	<classpathentry kind="lib" path="lib/opencsv-3.6.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/zxing-core-3.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

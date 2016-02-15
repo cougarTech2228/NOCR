@@ -42,6 +42,7 @@ public class GUI extends JFrame
 		JButton btnExtract = new JButton("Extract");
 		btnExtract.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				scouting.extractMatch();
 			}
 		});
 		btnExtract.setBounds(10, 79, 225, 56);
@@ -65,6 +66,11 @@ public class GUI extends JFrame
 		layeredPane_1.add(button);
 		
 		JButton button_1 = new JButton("Extract");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				scouting.extractPit();
+			}
+		});
 		button_1.setBounds(10, 79, 225, 56);
 		layeredPane_1.add(button_1);
 		

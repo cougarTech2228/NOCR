@@ -63,6 +63,16 @@ public class Scouting
 		scanner.scanToDir("C:/Users/cougartech/Documents/Scouting/matchToBeScanned/", 0, config.scanSettings);
 	}
 	
+	public void extractPit()
+	{
+		
+	}
+	
+	public void extractMatch()
+	{
+		
+	}
+	
 	
 	/**
 	 * Takes an image and creates cropped photos based on the specified cropSection 2D array
