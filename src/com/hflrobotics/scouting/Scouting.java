@@ -47,8 +47,10 @@ public class Scouting
 
 	public static void main(String[] args)
 	{
-		Scouting scouting = new Scouting();
-		GUI gui = new GUI();
+		//GUI gui = new GUI();
+		ImageHandler handler = new ImageHandler();
+		
+		handler.test();
 	}
 
 	public void scanPit()
