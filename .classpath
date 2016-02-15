@@ -8,5 +8,42 @@
 	<classpathentry kind="lib" path="lib/morena7.jar"/>
 	<classpathentry kind="lib" path="lib/opencsv-3.6.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-android-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-android-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-calibration-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-calibration-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-feature-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-feature-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-geo-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-geo-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-io-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-io-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-ip-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-ip-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-jcodec-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-jcodec-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-learning-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-learning-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-openkinect-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-openkinect-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-recognition-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-recognition-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-sfm-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-sfm-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-visualize-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-visualize-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-WebcamCapture-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-WebcamCapture-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-xuggler-0.21-sources.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/BoofCV-xuggler-0.21.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/core-0.29.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/ddogleg-0.9.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/dense64-0.29.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/equation-0.29.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/georegression-0.10.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/simple-0.29.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/xmlpull-1.1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/xpp3_min-1.1.4c.jar"/>
+	<classpathentry kind="lib" path="lib/BoofCV/xstream-1.4.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
