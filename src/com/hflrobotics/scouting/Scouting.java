@@ -10,6 +10,9 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.NotFoundException;
 import com.opencsv.CSVWriter;
 
 public class Scouting
@@ -70,7 +73,8 @@ public class Scouting
 	
 	public void extractMatch()
 	{
-		
+		ImageHandler handler = new ImageHandler();
+		handler.test1();
 	}
 	
 	
