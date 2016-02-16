@@ -41,15 +41,16 @@ public class ImageHandler
 {
 
 	private static final Map<DecodeHintType,Object> HINTS;
-	  private static final Map<DecodeHintType,Object> HINTS_PURE;
-
-	  static {
+	private static final Map<DecodeHintType,Object> HINTS_PURE;
+	
+	static
+	{
 	    HINTS = new EnumMap<>(DecodeHintType.class);
 	    HINTS.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
 	    HINTS.put(DecodeHintType.POSSIBLE_FORMATS, EnumSet.allOf(BarcodeFormat.class));
 	    HINTS_PURE = new EnumMap<>(HINTS);
 	    HINTS_PURE.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
-	  }
+	 }
 	
 	public ImageHandler()
 	{
