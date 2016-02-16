@@ -73,7 +73,7 @@ public class ImageHandler
 	
 	public void test1()
 	{
-		File file = new File("C:/Users/cougartech/Documents/Scouting/test/CCI02152016.png");
+		File file = new File("C:/Users/cougartech/Documents/Scouting/test/9.png");
 		BufferedImage image = null;
 		
 		try
@@ -116,15 +116,70 @@ public class ImageHandler
 	    for(Object result : results.toArray())
 	    {
 	    	Result theResult = (Result) result;
-	    	ResultPoint[] points = theResult.getResultPoints();
-	    	System.out.println(theResult.getText());
 	    	
-	    	for(ResultPoint point : points)
+	    	if(theResult.getText().equals("upperLeft"))
 	    	{
-	    		System.out.println("X: " + point.getX() + "  Y: " + point.getY() );
+	    		double x1 = theResult.getResultPoints()[0].getX();
+	    		double x2 = theResult.getResultPoints()[1].getX();
+	    		double y1 = theResult.getResultPoints()[0].getY();
+	    		double y2 = theResult.getResultPoints()[1].getY();
+	    		double deg = Math.toDegrees(Math.atan((y2 - y1) / (x2 - x1)));
+	    		System.out.println("Adjust by (deg): " + (90 - Math.abs(deg)));
+	    	}
+	    	
+	    	if(theResult.getText().equals("lowerRight"))
+	    	{
+	    		double x1 = theResult.getResultPoints()[0].getX();
+	    		double x2 = theResult.getResultPoints()[1].getX();
+	    		double y1 = theResult.getResultPoints()[0].getY();
+	    		double y2 = theResult.getResultPoints()[1].getY();
+	    		double deg = Math.toDegrees(Math.atan((y2 - y1) / (x2 - x1)));
+	    		System.out.println("Adjust by (deg): " + (90 - Math.abs(deg)));
+	    	}
+	    }
+	    
+	    /*
+	    for(Object result : results.toArray())
+	    {
+	    	Result theResult = (Result) result;
+	    	System.out.println(theResult.getText());
+	    	for(ResultPoint points : theResult.getResultPoints())
+	    	{
+	    		System.out.println(points.getX() + ", " + points.getY());
 	    	}
 	    	System.out.println("--");
 	    }
+	    */
+	    /*double x1 = 0;
+	    double y1 = 0;
+	    double x2 = 0;
+	    double y2 = 0;	    
+	    
+	    for(Object result : results.toArray())
+	    {
+	    	Result theResult = (Result) result;
+	    	
+	    	if(theResult.getText().equals("upperLeft"))
+	    	{
+	    		x1 = (int) theResult.getResultPoints()[1].getX();
+	    		y1 = (int) theResult.getResultPoints()[1].getX();
+	    	}
+	    	
+	    	if(theResult.getText().equals("lowerRight"))
+	    	{
+	    		x2 = (int) theResult.getResultPoints()[1].getX();
+	    		y2 = (int) theResult.getResultPoints()[1].getX();
+	    	}
+	    }
+	    
+	    double slope = (y2 - y1) / (x2 - x1);
+	    double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+	    double angle = Math.toDegrees(Math.atan2(y2 - y1, x2 - x1));
+	    System.out.println("1: " + x1 + "," + y1);
+	    System.out.println("2: " + x2 + "," + y2);
+	    System.out.println("Slope: " + slope);
+	    System.out.println("Dist: " + distance);
+	    System.out.println("Angle: " + angle);*/
 	}
 }
 	
