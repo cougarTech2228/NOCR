@@ -1,5 +1,6 @@
 package com.hflrobotics.scouting;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +32,9 @@ import com.google.zxing.ResultPoint;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
+import javaxt.io.Image;
+
 import com.google.zxing.multi.ByQuadrantReader;
 import com.google.zxing.multi.GenericMultipleBarcodeReader;
 import com.google.zxing.multi.MultipleBarcodeReader;
@@ -57,6 +61,44 @@ public class ImageHandler
 		
 	}
 	
+	public void test3() throws IOException
+	{
+		File file = new File("C:/Users/cougartech/Documents/Scouting/test/1.png");
+		File file2 = new File("C:/Users/cougartech/Documents/Scouting/test/1_.png");
+		Image img = new Image(file);
+		int width = img.getWidth();
+		int height = img.getHeight();
+		img.setCorners(// keep the upper left corner as it is
+	            0,0, // UL
+
+	            // push the upper right corner more to the bottom
+	            width,20, // UR
+
+	            // push the lower right corner more to the left
+	            width-45,height, // LR
+
+	            // push the lower left corner more to the right
+	            55,height); // LL
+		ImageIO.write(img.getBufferedImage(), "png", file2);
+	}
+	
+	public void test2() throws IOException
+	{
+		File file = new File("C:/Users/cougartech/Documents/Scouting/test/1.png");
+		File file2 = new File("C:/Users/cougartech/Documents/Scouting/test/1_.png");
+		BufferedImage src = ImageIO.read(file);
+		double deg = (Math.PI / 2) - test1();
+		int w = src.getWidth();
+		int h = src.getHeight();
+		BufferedImage dst = new BufferedImage(w, h, src.getType());
+		Graphics2D g2 = dst.createGraphics();
+		g2.rotate(deg);
+		g2.drawImage(src, 0, 0, null);
+		g2.dispose();
+		ImageIO.write(dst, "png", file2);
+		System.out.println("Image Written w/ " + deg);
+	}
+	
 	public void test() throws NotFoundException, ChecksumException, FormatException, IOException
 	{
 		Map hintMap = new HashMap();
@@ -72,10 +114,11 @@ public class ImageHandler
 		}
 	}
 	
-	public void test1()
+	public double test1()
 	{
-		File file = new File("C:/Users/cougartech/Documents/Scouting/test/9.png");
+		File file = new File("C:/Users/cougartech/Documents/Scouting/test/1.png");
 		BufferedImage image = null;
+		double deg = 0;
 		
 		try
 		{
@@ -124,63 +167,13 @@ public class ImageHandler
 	    		double x2 = theResult.getResultPoints()[1].getX();
 	    		double y1 = theResult.getResultPoints()[0].getY();
 	    		double y2 = theResult.getResultPoints()[1].getY();
-	    		double deg = Math.toDegrees(Math.atan((y2 - y1) / (x2 - x1)));
-	    		System.out.println("Adjust by (deg): " + (90 - Math.abs(deg)));
-	    	}
-	    	
-	    	if(theResult.getText().equals("lowerRight"))
-	    	{
-	    		double x1 = theResult.getResultPoints()[0].getX();
-	    		double x2 = theResult.getResultPoints()[1].getX();
-	    		double y1 = theResult.getResultPoints()[0].getY();
-	    		double y2 = theResult.getResultPoints()[1].getY();
-	    		double deg = Math.toDegrees(Math.atan((y2 - y1) / (x2 - x1)));
-	    		System.out.println("Adjust by (deg): " + (90 - Math.abs(deg)));
+	    		deg = Math.atan((y2 - y1) / (x2 - x1));
+	    		System.out.println("Adjust by (deg): " + Math.toDegrees(deg));
+	    		System.out.println("sss " + (90 - Math.toDegrees(deg)));
 	    	}
 	    }
 	    
-	    /*
-	    for(Object result : results.toArray())
-	    {
-	    	Result theResult = (Result) result;
-	    	System.out.println(theResult.getText());
-	    	for(ResultPoint points : theResult.getResultPoints())
-	    	{
-	    		System.out.println(points.getX() + ", " + points.getY());
-	    	}
-	    	System.out.println("--");
-	    }
-	    */
-	    /*double x1 = 0;
-	    double y1 = 0;
-	    double x2 = 0;
-	    double y2 = 0;	    
-	    
-	    for(Object result : results.toArray())
-	    {
-	    	Result theResult = (Result) result;
-	    	
-	    	if(theResult.getText().equals("upperLeft"))
-	    	{
-	    		x1 = (int) theResult.getResultPoints()[1].getX();
-	    		y1 = (int) theResult.getResultPoints()[1].getX();
-	    	}
-	    	
-	    	if(theResult.getText().equals("lowerRight"))
-	    	{
-	    		x2 = (int) theResult.getResultPoints()[1].getX();
-	    		y2 = (int) theResult.getResultPoints()[1].getX();
-	    	}
-	    }
-	    
-	    double slope = (y2 - y1) / (x2 - x1);
-	    double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-	    double angle = Math.toDegrees(Math.atan2(y2 - y1, x2 - x1));
-	    System.out.println("1: " + x1 + "," + y1);
-	    System.out.println("2: " + x2 + "," + y2);
-	    System.out.println("Slope: " + slope);
-	    System.out.println("Dist: " + distance);
-	    System.out.println("Angle: " + angle);*/
+	    return deg;
 	}
 }
 	

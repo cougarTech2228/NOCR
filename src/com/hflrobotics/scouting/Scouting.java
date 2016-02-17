@@ -74,7 +74,14 @@ public class Scouting
 	public void extractMatch()
 	{
 		ImageHandler handler = new ImageHandler();
-		handler.test1();
+		try
+		{
+			handler.test3();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	

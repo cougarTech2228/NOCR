@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/jdom-2.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/zxing-core-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/zxing-javase-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/javaxt-core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
