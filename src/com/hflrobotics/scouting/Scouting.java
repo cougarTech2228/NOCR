@@ -76,8 +76,8 @@ public class Scouting
 		ImageHandler handler = new ImageHandler();
 		try
 		{
-			handler.test3();
-		} catch (IOException e)
+			handler.test4();
+		} catch (NotFoundException | IOException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();

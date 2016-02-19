@@ -11,6 +11,7 @@ import eu.gnome.morena.Configuration;
 import eu.gnome.morena.Device;
 import eu.gnome.morena.Manager;
 import eu.gnome.morena.Scanner;
+import javaxt.io.Image;
 
 public class ScannerInteface
 {
@@ -62,8 +63,8 @@ public class ScannerInteface
 	      while(null != (file=session.getImageFile()))
 	      {
 	    	  	BufferedImage bimage = ImageIO.read(file);
-				File outputfile = new File(dir + Math.random() + ".png");
-			    ImageIO.write(bimage, "png", outputfile);	        
+	    	  	File outputfile = new File(dir + Math.random() + ".png");
+			    ImageIO.write(bimage, "png", outputfile);
 	      }
 	    } 
 	    catch (Exception ex)
