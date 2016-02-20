@@ -12,16 +12,24 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class Configuration
-{	
+{
 	Document doc;
 	int regionSize;
+	public int matchWidth = 0;
+	public int matchHeight = 0;
 	public ArrayList<Integer[]> matchRegions = new ArrayList<Integer[]>(0);
 	public ArrayList<String[]> matchCriteria = new ArrayList<String[]>(0);
 	public ArrayList<String[]> matchCropout = new ArrayList<String[]>(0);
+	
+	public int pitWidth = 0;
+	public int pitHeight = 0;
 	public ArrayList<Integer[]> pitRegions = new ArrayList<Integer[]>(0);
 	public ArrayList<String[]> pitCriteria = new ArrayList<String[]>(0);
 	public ArrayList<String[]> pitCropout = new ArrayList<String[]>(0);
+	
 	public ArrayList<String> scanSettings = new ArrayList<String>(0);
+	public ArrayList<String> fileSettings = new ArrayList<String>(0);
+	public double[]	imageBaseline = new double[7];
 	
 	public Configuration(String configLocation)
 	{
@@ -38,15 +46,17 @@ public class Configuration
 	}
 	
 	/**
-	 * Do not use in production
+	 * Calls all the loadConfig functions
 	 */
-	public void test()
+	public void load()
 	{
 		try
 		{
 			loadMatchConfig();
 			loadPitConfig();
 			loadScanConfig();
+			loadBaselineConfig();
+			loadFileConfig();
 		} 
 		catch (DataConversionException e)
 		{
@@ -54,6 +64,40 @@ public class Configuration
 		}
 	}
 	
+	/**
+	 * Loads baseline data from the config.xml and stores it into global variables
+	 * @throws DataConversionException
+	 */
+	private void loadFileConfig()
+	{
+		Element root = doc.getRootElement().getChild("files");
+		scanSettings.clear();
+		fileSettings.add(root.getChild("matchToBeScanned").getValue());
+		fileSettings.add(root.getChild("matchScanned").getValue());
+		fileSettings.add(root.getChild("matchData").getValue());
+		fileSettings.add(root.getChild("pitToBeScanned").getValue());
+		fileSettings.add(root.getChild("pitScanned").getValue());
+		fileSettings.add(root.getChild("pitData").getValue());
+	}
+	
+	/**
+	 * Loads baseline data from the config.xml and stores it into global variables
+	 */
+	private void loadBaselineConfig()
+	{
+		Element root = doc.getRootElement().getChild("sheet").getChild("baseline");
+		imageBaseline[0] = Double.valueOf(root.getChild("ul").getAttributeValue("xOff"));
+		imageBaseline[1] = Double.valueOf(root.getChild("ul").getAttributeValue("yOff"));
+		imageBaseline[2] = Double.valueOf(root.getChild("rotation").getValue());
+		imageBaseline[3] = Double.valueOf(root.getChild("crop").getAttributeValue("x"));
+		imageBaseline[4] = Double.valueOf(root.getChild("crop").getAttributeValue("y"));
+		imageBaseline[5] = Double.valueOf(root.getChild("crop").getAttributeValue("w"));
+		imageBaseline[6] = Double.valueOf(root.getChild("crop").getAttributeValue("h"));
+	}
+	
+	/**
+	 * Loads scan data from the config.xml and stores it into global variables
+	 */
 	private void loadScanConfig()
 	{
 		Element root = doc.getRootElement().getChild("scan");
@@ -74,13 +118,16 @@ public class Configuration
 		matchRegions.clear();
 		matchCriteria.clear();
 		matchCropout.clear();
+		
+		matchWidth = Integer.valueOf(root.getChild("regionSize").getAttributeValue("w"));
+		matchHeight = Integer.valueOf(root.getChild("regionSize").getAttributeValue("h"));
 				
 		for(Element aRegion : root.getChild("regions").getChildren("region"))
 		{
 			Integer[] region = 
 				{
 					aRegion.getAttribute("x").getIntValue(), 
-					aRegion.getAttribute("x").getIntValue()
+					aRegion.getAttribute("y").getIntValue()
 				};
 			matchRegions.add(region);
 		}
@@ -104,7 +151,6 @@ public class Configuration
 					aCropOut.getAttributeValue("x"),
 					aCropOut.getAttributeValue("w"),
 					aCropOut.getAttributeValue("h"),
-					aCropOut.getAttributeValue("x"),
 					aCropOut.getAttributeValue("fileType"),
 					aCropOut.getAttributeValue("extract"),
 				};
@@ -122,13 +168,16 @@ public class Configuration
 		pitRegions.clear();
 		pitCriteria.clear();
 		pitCropout.clear();
-				
+		
+		pitWidth = Integer.valueOf(root.getChild("regionSize").getAttributeValue("w"));
+		pitHeight = Integer.valueOf(root.getChild("regionSize").getAttributeValue("h"));
+		
 		for(Element aRegion : root.getChild("regions").getChildren("region"))
 		{
 			Integer[] region = 
 				{
 					aRegion.getAttribute("x").getIntValue(), 
-					aRegion.getAttribute("x").getIntValue()
+					aRegion.getAttribute("y").getIntValue()
 				};
 			pitRegions.add(region);
 		}

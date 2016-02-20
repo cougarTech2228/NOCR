@@ -7,9 +7,16 @@ import java.awt.BorderLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
+import com.google.zxing.NotFoundException;
+
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
+import javax.swing.AbstractListModel;
 
 public class GUI extends JFrame
 {
@@ -42,7 +49,14 @@ public class GUI extends JFrame
 		JButton btnExtract = new JButton("Extract");
 		btnExtract.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				scouting.extractMatch();
+				try
+				{
+					scouting.extractMatch();
+				} catch (NotFoundException | IOException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnExtract.setBounds(10, 79, 225, 56);
@@ -68,7 +82,14 @@ public class GUI extends JFrame
 		JButton button_1 = new JButton("Extract");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				scouting.extractPit();
+				try
+				{
+					scouting.extractPit();
+				} catch (NotFoundException | IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		button_1.setBounds(10, 79, 225, 56);

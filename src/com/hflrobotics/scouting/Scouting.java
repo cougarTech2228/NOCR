@@ -19,6 +19,8 @@ public class Scouting
 {
 	ScannerInteface scanner = new ScannerInteface();
 	Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting/config.xml");
+	ImageHandler handler = new ImageHandler();
+	
 	// x, y, w, h
 	int[][] sampleRegion =
 	{
@@ -50,81 +52,195 @@ public class Scouting
 
 	public static void main(String[] args)
 	{
-		Scouting scouting = new Scouting();
 		GUI gui = new GUI();
 	}
 
+	private void loadFromConfig()
+	{
+		config.load();
+	}
+	
 	public void scanPit()
 	{
-		config.test();
+		loadFromConfig();
 		scanner.scanToDir("C:/Users/cougartech/Documents/Scouting/pitToBeScanned/", 0, config.scanSettings);
 	}
 	
 	public void scanMatch()
 	{
-		config.test();
+		loadFromConfig();
 		scanner.scanToDir("C:/Users/cougartech/Documents/Scouting/matchToBeScanned/", 0, config.scanSettings);
 	}
 	
-	public void extractPit()
+	public void extractPit() throws IOException, NotFoundException
 	{
-		ImageHandler handler = new ImageHandler();
-		handler.test7();
-	}
-	
-	public void extractMatch()
-	{
-		ImageHandler handler = new ImageHandler();
-		try
+		loadFromConfig();
+		ArrayList<String> availableSheets = getSheetFiles(config.fileSettings.get(3));
+		
+		for(String sheet : availableSheets)
 		{
-			handler.manipulateImage();
-		} catch (IOException | NotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.fileSettings.get(4), true));
+			BufferedImage img = ImageIO.read(new File(config.fileSettings.get(0) + sheet));
+			img = handler.manipulateImage(img, config.imageBaseline);
+
+			byte[][] pixelMap = getPixelMap(img);
+			int[] sheetValues = getSheetValues(config.pitRegions, config.pitHeight, config.pitWidth, pixelMap);
+			
+			csvWriter.writeNext(getDataset(config.pitCriteria, sheetValues, null, null), false);
+			csvWriter.close();
+			
+			extractCropSection(img, pixelMap, config.pitCropout, config.fileSettings.get(4));
 		}
 	}
 	
+	public void extractMatch() throws IOException, NotFoundException
+	{
+		loadFromConfig();
+		ArrayList<String> availableSheets = getSheetFiles(config.fileSettings.get(0));
+				
+		for(String sheet : availableSheets)
+		{
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.fileSettings.get(2), true));
+			BufferedImage img = ImageIO.read(new File(config.fileSettings.get(0) + sheet));
+			img = handler.manipulateImage(img, config.imageBaseline);
+			
+			byte[][] pixelMap = getPixelMap(img);
+			int[] sheetValues = getSheetValues(config.matchRegions, config.matchHeight, config.matchWidth, pixelMap);
+			
+			csvWriter.writeNext(getDataset(config.matchCriteria, sheetValues, null, null), false);
+			csvWriter.close();
+			
+			extractCropSection(img, pixelMap, config.matchCropout, config.fileSettings.get(1));
+			
+			// Renames image to scan ID and move image to scanned directory
+			/*File newScanned = new File(toBeScannedDir + "/" + team + "_" + match + ".jpg");
+			File scanned = new File(scannedDir + "/" + team + "_" + match + ".jpg");
+			toBeScanned.renameTo(newScanned);
+			Files.move(newScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);*/
+		}	
+	}
+	
+	/**
+	 * Retrieves a dataset for the CSV file based on the criteria and sheet values
+	 * @param criteria
+	 * @param sheetValues
+	 * @param team
+	 * @param match
+	 * @return
+	 */
+	private String[] getDataset(ArrayList<String[]> criteria, int[] sheetValues, String team, String match)
+	{
+		String[] result = new String[criteria.size()];
+		int i = 0;
+		
+		for(String[] aCriteria : criteria)
+		{
+			String[] exp = aCriteria[1].split(":");
+			
+			switch(exp[0])
+			{
+				case "BLANK":
+					result[i] = "";
+					break;
+				
+				case "TEAM":
+					result[i] = team;
+					break;
+					
+				case "MATCH":
+					result[i] = match;
+					break;
+					
+				case "SUM":
+					String[] summationComponents = exp[1].split(",");
+
+					for(int ii = 0; ii < summationComponents.length; ii++)
+					{
+						result[i] += Integer.valueOf(sheetValues[Integer.valueOf(summationComponents[ii])]);
+					}					
+					break;
+					
+				case "VALUE":
+					if(sheetValues[Integer.valueOf(exp[1])] == 1)
+					{
+						result[i] = "yes";
+					}
+					else
+					{
+						result[i] = "no";
+					}					
+					break;
+					
+				case "SELECT":
+					String[] option = exp[1].split(",");
+					
+					for(int ii = 0; ii < option.length; ii++)
+					{
+						if(sheetValues[Integer.valueOf(option[ii].split("-")[0])] == 1)
+						{
+							result[i] = option[ii].split("-")[1];
+							break;
+						}
+						else
+						{
+							result[i] = "none";
+						}
+					}			
+					break;
+					
+				default:
+					result[i] = "";
+					break;
+			}
+			
+			i++;
+		}
+		
+		return result;
+	}
 	
 	/**
 	 * Takes an image and creates cropped photos based on the specified cropSection 2D array
-	 * @param file the File to crop from
+	 * @param img the BufferedImage to crop from
 	 * @param outputDir the directory of where to place the image
+	 * @throws IOException 
 	 */
-	private void extractCropSection(File file, String outputDir, String extractType)
+	private void extractCropSection(BufferedImage img, byte[][] map, ArrayList<String[]> cropSection, String outputDir) throws IOException
 	{
-		BufferedImage img = null;
-		try
-		{
-			img = ImageIO.read(file);
-		}
-		catch(IOException ex)
-		{
-
-		}
-		
 		for(String[] aCropSection : cropSection)
 		{
-			File output = new File(outputDir + "/" + aCropSection[0] + ".jpg");
-			
-			try
+			switch(aCropSection[6])
 			{
-				output.createNewFile();
-			}
-			catch(IOException e1)
-			{
-				e1.printStackTrace();
-			}
-			
-			//Write a sub image of the original to the directory
-			try
-			{
-				ImageIO.write(img.getSubimage(Integer.valueOf(aCropSection[1]), Integer.valueOf(aCropSection[2]), Integer.valueOf(aCropSection[3]), Integer.valueOf(aCropSection[4])), "jpg", output);
-			}
-			catch(NumberFormatException | IOException ex)
-			{
-				ex.printStackTrace();
-			}
+				case "HAS_VALUE":
+					if(getChecked(Integer.valueOf(aCropSection[1]),	Integer.valueOf(aCropSection[2]), 
+							Integer.valueOf(aCropSection[3]), Integer.valueOf(aCropSection[4]),	map) == 1)
+					{
+						File output = new File(outputDir + aCropSection[0]);
+						output.createNewFile();
+
+						img = img.getSubimage(Integer.valueOf(aCropSection[1]),
+								Integer.valueOf(aCropSection[2]), 
+								Integer.valueOf(aCropSection[3]),
+								Integer.valueOf(aCropSection[4]));
+						
+						//Write a sub image of the original to the directory
+						ImageIO.write(img, aCropSection[5], output);
+					}
+					break;
+					
+				default:
+					File output = new File(outputDir + aCropSection[0]);
+					output.createNewFile();
+
+					img = img.getSubimage(Integer.valueOf(aCropSection[1]),
+							Integer.valueOf(aCropSection[2]), 
+							Integer.valueOf(aCropSection[3]),
+							Integer.valueOf(aCropSection[4]));
+					
+					//Write a sub image of the original to the directory
+					ImageIO.write(img, aCropSection[5], output);
+					break;
+			}			
 		}
 	}	
 	
@@ -318,202 +434,6 @@ public class Scouting
 	}
 
 	/**
-	 * Test method for using data set expressions
-	 */
-	@SuppressWarnings("unused")
-	private void extract()
-	{
-		String toBeScannedDir = "C:/Users/Michael/Documents/Scouting/matchToBeScanned";
-		ArrayList<String> availableSheets = getSheetFiles(toBeScannedDir);
-		File toBeScanned = new File(toBeScannedDir + "/" + availableSheets.get(0));
-
-		//Test set (header, expression)
-		String[][] dataSets =
-		{
-				{ "low goal", "SUM:1,2" },
-				{ "reach", "VALUE:0" } };
-
-		int[] result = new int[2];
-		byte[][] pixelMap = getPixelMap(toBeScanned);
-		int[] sheetValues = getSheetValues(sampleRegion, pixelMap);
-
-		for(int i = 0; i < dataSets.length; i++)
-		{
-			String[] dataSetExpression = dataSets[i][1].split(":", 2);
-
-			if(dataSetExpression[0].equalsIgnoreCase("SUM"))
-			{
-				String[] summationComponents = dataSetExpression[1].split(",");
-
-				for(int ii = 0; ii < summationComponents.length; ii++)
-				{
-					result[i] += Integer.valueOf(sheetValues[Integer.valueOf(summationComponents[ii])]);
-				}
-			}
-			else
-			{
-				result[i] = sheetValues[Integer.valueOf(dataSetExpression[1])];
-			}
-		}
-
-		//Test print out
-		System.out.println(result[0] + "  " + result[1]);
-	}
-
-	@SuppressWarnings("unused")
-	@Deprecated
-	private void scanAvailableSheets(String toBeScannedDir, String scannedDir) throws IOException
-	{
-		ArrayList<String> availableSheets = getSheetFiles(toBeScannedDir);
-		int[][] sampleRegion =
-		{
-				{ 650, 475, 10, 10 },
-				{ 650, 530, 10, 10 },
-				{ 650, 600, 10, 10 } };
-
-		for(int i = 0; i < availableSheets.size(); i++)
-		{
-			File toBeScanned = new File(toBeScannedDir + "/" + availableSheets.get(i));
-			CSVWriter csvWriter = new CSVWriter(
-					new FileWriter("C:/Users/cougartech/Documents/Scouting_Sheet/data.csv", true));
-			byte[][] pixelMap = getPixelMap(toBeScanned);
-			int[] sheetValues = getSheetValues(sampleRegion, pixelMap);
-
-			// Convert team and match number from seven segment to string
-			String team = Integer
-					.toString(decodeSevenSegment(sheetValues[0], sheetValues[1], sheetValues[2], sheetValues[3],
-							sheetValues[4], sheetValues[5], sheetValues[6]))
-					+ Integer.toString(decodeSevenSegment(sheetValues[7], sheetValues[8], sheetValues[9],
-							sheetValues[10], sheetValues[11], sheetValues[12], sheetValues[13]))
-					+ Integer.toString(decodeSevenSegment(sheetValues[14], sheetValues[15], sheetValues[16],
-							sheetValues[17], sheetValues[18], sheetValues[19], sheetValues[20]))
-					+ Integer.toString(decodeSevenSegment(sheetValues[21], sheetValues[22], sheetValues[23],
-							sheetValues[24], sheetValues[25], sheetValues[26], sheetValues[27]));
-			String match = Integer
-					.toString(decodeSevenSegment(sheetValues[28], sheetValues[29], sheetValues[30], sheetValues[31],
-							sheetValues[32], sheetValues[33], sheetValues[34]))
-					+ Integer.toString(decodeSevenSegment(sheetValues[35], sheetValues[36], sheetValues[37],
-							sheetValues[38], sheetValues[39], sheetValues[40], sheetValues[41]));
-
-			String[] values =
-			{ team, match, "01", "02" };
-
-			// Appends value to the CSV and closes the FileWriter
-			csvWriter.writeNext(values, false);
-			csvWriter.close();
-
-			// Renames image to scan ID and move image to scanned directory
-			File newScanned = new File(toBeScannedDir + "/" + team + "_" + match + ".jpg");
-			File scanned = new File(scannedDir + "/" + team + "_" + match + ".jpg");
-			toBeScanned.renameTo(newScanned);
-			Files.move(newScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		}
-
-	}
-
-	@SuppressWarnings("unused")
-	@Deprecated
-	private String getMatchNumber(byte[][] pixelMap)
-	{
-		int x = 1880;
-		int y = 170;
-		int[] values = new int[14];
-
-		for(int i = 0; i < 2; i++)
-		{
-			values[i] = getChecked(x, y, 40, 15, pixelMap);
-			x += 130;
-		}
-
-		x = 1850;
-		y += 85;
-
-		for(int i = 2; i < 4; i++)
-		{
-			values[i] = getChecked(x, y, 40, 15, pixelMap);
-		}
-
-		x = 1850;
-		y += 85;
-
-		for(int i = 4; i < 6; i++)
-		{
-			values[i] = getChecked(x, y, 40, 15, pixelMap);
-		}
-
-		String result = "";
-		for(int i = 0; i < 14; i++)
-		{
-			result = result + "/" + values[i];
-		}
-
-		return result;
-	}
-
-	@SuppressWarnings("unused")
-	@Deprecated
-	private String getTeamNumber(byte[][] pixelMap)
-	{
-		int x = 1240;
-		int y = 170;
-		int[] values = new int[28];
-
-		// Horizontal segments
-		for(int i = 0; i < 4; i++)
-		{
-			values[i] = getChecked(x, y, 40, 15, pixelMap);
-			x += 130;
-		}
-
-		x = 1240;
-		y += 85;
-
-		for(int i = 4; i < 8; i++)
-		{
-			values[i] = getChecked(x, y, 40, 15, pixelMap);
-			x += 130;
-		}
-
-		x = 1240;
-		y += 85;
-
-		for(int i = 8; i < 12; i++)
-		{
-			values[i] = getChecked(x, y, 40, 15, pixelMap);
-			x += 130;
-		}
-
-		x = 1210;
-		y = 200;
-
-		// Vertical segments
-		for(int i = 12; i < 20; i++)
-		{
-			values[i] = getChecked(x, y, 15, 40, pixelMap);
-			x += 130;
-		}
-
-		x = 1210;
-		y += 80;
-
-		for(int i = 12; i < 20; i++)
-		{
-			values[i] = getChecked(x, y, 15, 40, pixelMap);
-			x += 130;
-		}
-
-		return Integer
-				.toString(decodeSevenSegment(values[0], values[13], values[21], values[8], values[20], values[12],
-						values[4]))
-				+ Integer.toString(decodeSevenSegment(values[1], values[15], values[23], values[9], values[22],
-						values[14], values[5]))
-				+ Integer.toString(decodeSevenSegment(values[2], values[17], values[25], values[10], values[24],
-						values[16], values[6]))
-				+ Integer.toString(decodeSevenSegment(values[3], values[19], values[27], values[11], values[25],
-						values[18], values[7]));
-	}
-
-	/**
 	 * Converts the state of a seven segment to an integer representation
 	 * @param a state of the a segment (0- false 1- true)
 	 * @param b state of the b segment (0- false 1- true)
@@ -583,14 +503,14 @@ public class Scouting
 	 * @param pixelMap the byte array that represents the image
 	 * @return
 	 */
-	private int[] getSheetValues(int[][] sampleRegion, byte[][] pixelMap)
+	private int[] getSheetValues(ArrayList<Integer[]> sampleRegion, int w, int h, byte[][] pixelMap)
 	{
-		int[] result = new int[sampleRegion.length];
+		int[] result = new int[sampleRegion.size()];
 		int i = 0;
 
-		for(int[] aSampleRegion : sampleRegion)
+		for(Integer[] aSampleRegion : sampleRegion)
 		{
-			result[i] = getChecked(aSampleRegion[0], aSampleRegion[1], aSampleRegion[2], aSampleRegion[3], pixelMap);
+			result[i] = getChecked(aSampleRegion[0], aSampleRegion[1], w, h, pixelMap);
 			i++;
 		}
 
@@ -633,21 +553,11 @@ public class Scouting
 	/**
 	 * getPixelMap
 	 * 
-	 * @param filePath specific directory of image
+	 * @param img BufferedImage that has been manipulated
 	 * @return 2D byte array of pixel data (0- white 1- black)
 	 */
-	private byte[][] getPixelMap(File file)
+	private byte[][] getPixelMap(BufferedImage img)
 	{
-		BufferedImage img = null;
-		try
-		{
-			img = ImageIO.read(file);
-		}
-		catch(IOException ex)
-		{
-			System.out.print("heNeedSomeMilk");
-		}
-
 		byte[][] pixels = new byte[img.getWidth()][];
 		FastRGB imgRGB = new FastRGB(img);
 
@@ -669,9 +579,9 @@ public class Scouting
 	 * getSheetFiles
 	 * 
 	 * @param filePath specified directory to look in
-	 * @return all file names in the directory that end with .jpg
+	 * @return all file names in the directory that end with .png
 	 */
-	public ArrayList<String> getSheetFiles(String filePath)
+	private ArrayList<String> getSheetFiles(String filePath)
 	{
 		File file = new File(filePath);
 		String[] fileList = file.list();
@@ -679,7 +589,7 @@ public class Scouting
 
 		for(String aFileList : fileList)
 		{
-			if(aFileList.substring(aFileList.length() - 4).equalsIgnoreCase(".jpg"))
+			if(aFileList.substring(aFileList.length() - 4).equalsIgnoreCase(".png"))
 			{
 				sheetFiles.add(aFileList);
 			}

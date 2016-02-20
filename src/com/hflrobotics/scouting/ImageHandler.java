@@ -45,26 +45,30 @@ public class ImageHandler
 		
 	}
 
-	public void manipulateImage() throws IOException, NotFoundException
+	/**
+	 * Adjusts and crops the BufferedImage based on the two QR codes.
+	 * @param img the BufferedImage to be manipulated
+	 * @return adjusted and cropped BufferedImage
+	 * @throws IOException
+	 * @throws NotFoundException
+	 */
+	public BufferedImage manipulateImage(BufferedImage img, double[] config) throws IOException, NotFoundException
 	{
-		// TODO change to accept and return BufferedImage
-		File file = new File("C:/Users/cougartech/Documents/Scouting/test/8.png");
-		File outputFile = new File("C:/Users/cougartech/Documents/Scouting/test/8__.png");
-		
+		//	Config:	0- xOff1 baseline	1- yOff1 baseline
 		double xOff1 = 0;
 		double yOff1 = 0;
-		double degOff = 0;
+		double radOff = 0;
 		double x1 = 0;
 		double y1 = 0;
 		double x2 = 0;
 		double y2 = 0;
-		BufferedImage img = ImageIO.read(file);
 		
+		//	Create binary image of the BufferedImage
 		LuminanceSource lumSource = new BufferedImageLuminanceSource(img);
 	    BinaryBitmap bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(lumSource));
 	    Collection<Result> results = new ArrayList<>(1);
 
-        // Look for multiple barcodes
+        // Look for multiple QR codes in the binary image
     	QRCodeMultiReader multiReader = new QRCodeMultiReader();
         Result[] theResults = multiReader.decodeMultiple(bitmap, HINTS);
         
@@ -79,22 +83,23 @@ public class ImageHandler
 	    	
 	    	if(theResult.getText().equals("upperLeft"))
 	    	{
-	    		xOff1 = 187.5 - theResult.getResultPoints()[1].getX();
-	    		yOff1 = 187.0 - theResult.getResultPoints()[1].getY();
+	    		xOff1 = config[0] - theResult.getResultPoints()[1].getX();
+	    		yOff1 = config[1] - theResult.getResultPoints()[1].getY();
 	    	}
 	    }
 	    
+	    //	Translate the image so the "upperLeft" QR code is aligned with the actual
 	    AffineTransform tx = new AffineTransform();
 	    tx.translate(xOff1, yOff1);
-
 	    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 	    img = op.filter(img, null);
 	    
+	    //		Create binary image of the BufferedImage
 	    lumSource = new BufferedImageLuminanceSource(img);
 	    bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(lumSource));
 	    results = new ArrayList<>(1);
 
-        // Look for multiple barcodes
+        // Look for multiple QR codes in the image
     	multiReader = new QRCodeMultiReader();
         theResults = multiReader.decodeMultiple(bitmap, HINTS);
         
@@ -120,21 +125,23 @@ public class ImageHandler
 	    	}
 	    }
 
-	    // TODO Change this to just be radians
-	    degOff = 53.87082534128857 - Math.toDegrees(Math.atan((y2 - y1) / (x2 - x1)));
+	    radOff = config[2] - Math.atan((y2 - y1) / (x2 - x1));
 	    
+	    //	Rotates image to align the "lowerRight" QR code
 	    AffineTransform tx1 = new AffineTransform();
-	    
-	    tx1.rotate(Math.toRadians(degOff), 0, 0);
-
+	    tx1.rotate(radOff, 0, 0);
 	    AffineTransformOp op1 = new AffineTransformOp(tx1, AffineTransformOp.TYPE_BILINEAR);
 	    img = op1.filter(img, null);
 
 	    // TODO add func to grab these and store 'em 187.5	187.0	337.5	339.0
+	    // 0.94022327296995122925
 	    
 	    // TODO Size of actual based on sheet -- needs to be drawn from config
-	    img = img.getSubimage(150, 150, 2250, 3000);
-	    ImageIO.write(img, "png", outputFile);
+	    //	Grab a crop that has no margin
+	    //img = img.getSubimage(150, 150, 2250, 3000);
+	    img = img.getSubimage((int) config[3], (int) config[4], (int) config[5], (int) config[6]);
+	    
+	    return img;
 	}
 	
 	public void test7()
