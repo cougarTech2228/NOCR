@@ -68,7 +68,8 @@ public class Scouting
 	
 	public void extractPit()
 	{
-		
+		ImageHandler handler = new ImageHandler();
+		handler.test7();
 	}
 	
 	public void extractMatch()
@@ -76,8 +77,8 @@ public class Scouting
 		ImageHandler handler = new ImageHandler();
 		try
 		{
-			handler.test4();
-		} catch (NotFoundException | IOException e)
+			handler.manipulateImage();
+		} catch (IOException | NotFoundException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
