@@ -74,6 +74,13 @@ public class Scouting
 		scanner.scanToDir(config.fileSettings.get(0), 0, config.scanSettings);
 	}
 	
+	public void getBaseline() throws NotFoundException, IOException
+	{
+		loadFromConfig();
+		File file = new File(config.fileSettings.get(6) + "baseline.png");
+		handler.getBaseLine(file, config.fileSettings.get(6), config.imageBaseline);
+	}
+	
 	public void extractPit() throws IOException, NotFoundException
 	{
 		loadFromConfig();
@@ -314,7 +321,7 @@ public class Scouting
 					//Write a sub image of the original to the directory
 					ImageIO.write(img, aCropSection[5], output);
 					break;
-			}			
+			}	
 		}
 	}	
 	
@@ -614,7 +621,7 @@ public class Scouting
 			}
 		}
 
-		if((double) sigma / area > 0.75)
+		if((double) sigma / area > 0.3)
 		{
 			return 1;
 		}

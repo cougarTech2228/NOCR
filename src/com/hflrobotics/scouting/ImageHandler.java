@@ -5,6 +5,8 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -144,9 +146,51 @@ public class ImageHandler
 	    return img;
 	}
 	
-	public void test7()
+	public void getBaseLine(File file, String newFile, double[] config) throws NotFoundException, IOException
 	{
+		double xOff = 0;
+		double yOff = 0;
+		double x2 = 0;
+		double y2 = 0;
+		double radOff = 0;
 		
+		//	Create binary image of the BufferedImage
+		BufferedImage img = ImageIO.read(file);
+		LuminanceSource lumSource = new BufferedImageLuminanceSource(img);
+	    BinaryBitmap bitmap = new BinaryBitmap(new GlobalHistogramBinarizer(lumSource));
+	    Collection<Result> results = new ArrayList<>(1);
+
+        // Look for multiple QR codes in the binary image
+    	QRCodeMultiReader multiReader = new QRCodeMultiReader();
+        Result[] theResults = multiReader.decodeMultiple(bitmap, HINTS);
+        
+        if(theResults != null) 
+        {
+          results.addAll(Arrays.asList(theResults));
+        }
+
+	    for(Object result : results.toArray())
+	    {
+	    	Result theResult = (Result) result;
+	    	
+	    	if(theResult.getText().equals("upperLeft"))
+	    	{
+	    		xOff = theResult.getResultPoints()[1].getX();
+	    		yOff = theResult.getResultPoints()[1].getY();
+	    		
+	    	}
+	    	else if(theResult.getText().equals("lowerRight"))
+	    	{
+	    		x2 = theResult.getResultPoints()[1].getX();
+	    		y2 = theResult.getResultPoints()[1].getY();
+	    	}
+	    }
+
+	    radOff = Math.atan((y2 - yOff) / (x2 - xOff));
+	    img = img.getSubimage((int) config[3], (int) config[4], (int) config[5], (int) config[6]);
+	    File scanned = new File(newFile + xOff + "_" + yOff + "_" + radOff + ".png");
+	    ImageIO.write(img, "png", file);
+		Files.move(file.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 }
 	

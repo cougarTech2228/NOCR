@@ -82,6 +82,7 @@ public class Configuration
 		fileSettings.add(root.getChild("pitToBeScanned").getValue());
 		fileSettings.add(root.getChild("pitScanned").getValue());
 		fileSettings.add(root.getChild("pitData").getValue());
+		fileSettings.add(root.getChild("baseline").getValue());
 	}
 	
 	/**

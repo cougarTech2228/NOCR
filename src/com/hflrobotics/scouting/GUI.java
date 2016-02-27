@@ -99,5 +99,24 @@ public class GUI extends JFrame
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setBounds(10, 146, 225, 17);
 		layeredPane_1.add(label);
+		
+		JLayeredPane layeredPane_2 = new JLayeredPane();
+		tabbedPane.addTab("Baseline", null, layeredPane_2, null);
+		
+		JButton btnNewButton_1 = new JButton("Get Baseline");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try
+				{
+					scouting.getBaseline();
+				} catch (NotFoundException | IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		btnNewButton_1.setBounds(10, 11, 225, 148);
+		layeredPane_2.add(btnNewButton_1);
 	}
 }
