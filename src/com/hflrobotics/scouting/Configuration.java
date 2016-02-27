@@ -53,11 +53,12 @@ public class Configuration
 	 */
 	public void load()
 	{
+		loadScanConfig();
+		
 		try
 		{
 			loadMatchConfig();
-			loadPitConfig();
-			loadScanConfig();
+			loadPitConfig();			
 			loadBaselineConfig();
 			loadFileConfig();
 		} 
@@ -101,7 +102,7 @@ public class Configuration
 	/**
 	 * Loads scan data from the config.xml and stores it into global variables
 	 */
-	private void loadScanConfig()
+	public void loadScanConfig()
 	{
 		Element root = doc.getRootElement().getChild("scan");
 		scanSettings.clear();

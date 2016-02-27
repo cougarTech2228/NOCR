@@ -63,13 +63,15 @@ public class Scouting
 	public void scanPit()
 	{
 		loadFromConfig();
-		scanner.scanToDir("C:/Users/cougartech/Documents/Scouting/pitToBeScanned/", 0, config.scanSettings);
+		config.loadScanConfig();
+		scanner.scanToDir(config.fileSettings.get(3), 0, config.scanSettings);
 	}
 	
 	public void scanMatch()
 	{
 		loadFromConfig();
-		scanner.scanToDir("C:/Users/cougartech/Documents/Scouting/matchToBeScanned/", 0, config.scanSettings);
+		config.loadScanConfig();
+		scanner.scanToDir(config.fileSettings.get(0), 0, config.scanSettings);
 	}
 	
 	public void extractPit() throws IOException, NotFoundException
@@ -79,7 +81,7 @@ public class Scouting
 		
 		for(String sheet : availableSheets)
 		{
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.fileSettings.get(4), true));
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.fileSettings.get(5), true));
 			File toBeScanned = new File(config.fileSettings.get(3) + sheet);
 			BufferedImage img = ImageIO.read(toBeScanned);
 			img = handler.manipulateImage(img, config.imageBaseline);
@@ -631,7 +633,7 @@ public class Scouting
 	private byte[][] getPixelMap(BufferedImage img)
 	{
 		byte[][] pixels = new byte[img.getWidth()][];
-		FastRGB imgRGB = new FastRGB(img);
+		/*FastRGB imgRGB = new FastRGB(img);
 
 		for(int x = 0; x < img.getWidth(); x++)
 		{
@@ -642,8 +644,19 @@ public class Scouting
 				//If the pixel is not white (0xFFFFFFFF -- 0) then it is black (1)
 				pixels[x][y] = (byte) (imgRGB.getRGB(x, y) == 0xFFFFFFFF ? 0 : 1);
 			}
-		}
+		}*/
+		
+		for(int x = 0; x < img.getWidth(); x++)
+		{
+			pixels[x] = new byte[img.getHeight()];
 
+			for(int y = 0; y < img.getHeight(); y++)
+			{
+				//If the pixel is not white (0xFFFFFFFF -- 0) then it is black (1)
+				pixels[x][y] = (byte) (img.getRGB(x, y) == 0xFFFFFFFF ? 0 : 1);
+			}
+		}
+		
 		return pixels;
 	}
 
