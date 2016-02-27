@@ -17,12 +17,15 @@ public class Configuration
 	int regionSize;
 	public int matchWidth = 0;
 	public int matchHeight = 0;
+	public int[] matchTeam = new int[4];
+	public int[] matchMatch = new int[4];
 	public ArrayList<Integer[]> matchRegions = new ArrayList<Integer[]>(0);
 	public ArrayList<String[]> matchCriteria = new ArrayList<String[]>(0);
 	public ArrayList<String[]> matchCropout = new ArrayList<String[]>(0);
 	
 	public int pitWidth = 0;
 	public int pitHeight = 0;
+	public int[] pitTeam = new int[4];
 	public ArrayList<Integer[]> pitRegions = new ArrayList<Integer[]>(0);
 	public ArrayList<String[]> pitCriteria = new ArrayList<String[]>(0);
 	public ArrayList<String[]> pitCropout = new ArrayList<String[]>(0);
@@ -119,6 +122,16 @@ public class Configuration
 		matchCriteria.clear();
 		matchCropout.clear();
 		
+		matchTeam[0] = Integer.valueOf(root.getChild("team").getAttributeValue("x"));
+		matchTeam[1] = Integer.valueOf(root.getChild("team").getAttributeValue("y"));
+		matchTeam[2] = Integer.valueOf(root.getChild("team").getAttributeValue("w"));
+		matchTeam[3] = Integer.valueOf(root.getChild("team").getAttributeValue("h"));
+		
+		matchMatch[0] = Integer.valueOf(root.getChild("match").getAttributeValue("x"));
+		matchMatch[1] = Integer.valueOf(root.getChild("match").getAttributeValue("y"));
+		matchMatch[2] = Integer.valueOf(root.getChild("match").getAttributeValue("w"));
+		matchMatch[3] = Integer.valueOf(root.getChild("match").getAttributeValue("h"));
+		
 		matchWidth = Integer.valueOf(root.getChild("regionSize").getAttributeValue("w"));
 		matchHeight = Integer.valueOf(root.getChild("regionSize").getAttributeValue("h"));
 				
@@ -168,6 +181,11 @@ public class Configuration
 		pitRegions.clear();
 		pitCriteria.clear();
 		pitCropout.clear();
+		
+		pitTeam[0] = Integer.valueOf(root.getChild("team").getAttributeValue("x"));
+		pitTeam[1] = Integer.valueOf(root.getChild("team").getAttributeValue("y"));
+		pitTeam[2] = Integer.valueOf(root.getChild("team").getAttributeValue("w"));
+		pitTeam[3] = Integer.valueOf(root.getChild("team").getAttributeValue("h"));
 		
 		pitWidth = Integer.valueOf(root.getChild("regionSize").getAttributeValue("w"));
 		pitHeight = Integer.valueOf(root.getChild("regionSize").getAttributeValue("h"));

@@ -80,16 +80,22 @@ public class Scouting
 		for(String sheet : availableSheets)
 		{
 			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.fileSettings.get(4), true));
-			BufferedImage img = ImageIO.read(new File(config.fileSettings.get(0) + sheet));
+			File toBeScanned = new File(config.fileSettings.get(3) + sheet);
+			BufferedImage img = ImageIO.read(toBeScanned);
 			img = handler.manipulateImage(img, config.imageBaseline);
-
+			
 			byte[][] pixelMap = getPixelMap(img);
 			int[] sheetValues = getSheetValues(config.pitRegions, config.pitHeight, config.pitWidth, pixelMap);
+			String team = getTeam(pixelMap, config.pitTeam);
 			
-			csvWriter.writeNext(getDataset(config.pitCriteria, sheetValues, null, null), false);
+			csvWriter.writeNext(getDataset(config.pitCriteria, sheetValues, team, null), false);
 			csvWriter.close();
 			
 			extractCropSection(img, pixelMap, config.pitCropout, config.fileSettings.get(4));
+			
+			// Renames image to scan ID and move image to scanned directory
+			File scanned = new File(config.fileSettings.get(4) + team + ".png");
+			Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
 	
@@ -101,23 +107,89 @@ public class Scouting
 		for(String sheet : availableSheets)
 		{
 			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.fileSettings.get(2), true));
-			BufferedImage img = ImageIO.read(new File(config.fileSettings.get(0) + sheet));
+			File toBeScanned = new File(config.fileSettings.get(0) + sheet);
+			BufferedImage img = ImageIO.read(toBeScanned);
+			
 			img = handler.manipulateImage(img, config.imageBaseline);
 			
 			byte[][] pixelMap = getPixelMap(img);
 			int[] sheetValues = getSheetValues(config.matchRegions, config.matchHeight, config.matchWidth, pixelMap);
+			String team = getTeam(pixelMap, config.matchTeam);
+			String match = getMatch(pixelMap, config.matchMatch);			
 			
-			csvWriter.writeNext(getDataset(config.matchCriteria, sheetValues, null, null), false);
+			csvWriter.writeNext(getDataset(config.matchCriteria, sheetValues, team, match), false);
 			csvWriter.close();
 			
 			extractCropSection(img, pixelMap, config.matchCropout, config.fileSettings.get(1));
 			
 			// Renames image to scan ID and move image to scanned directory
-			/*File newScanned = new File(toBeScannedDir + "/" + team + "_" + match + ".jpg");
-			File scanned = new File(scannedDir + "/" + team + "_" + match + ".jpg");
-			toBeScanned.renameTo(newScanned);
-			Files.move(newScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);*/
+			File scanned = new File(config.fileSettings.get(1) + team + "_" + match + ".png");
+			Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}	
+	}
+	
+	private String getTeam(byte[][] pixelMap, int[] config)
+	{
+		String result = "";
+
+		int w = config[2];
+		int h = config[3];
+		int x = config[0];
+		int y = config[1];
+		int a, b, c, d, e, f, g;
+		int digit[] = new int[4];
+		
+		for(int i = 0; i < 2; i++)
+		{
+			a = getChecked(x + h, y, w, h, pixelMap);
+			g = getChecked(x + h, y + h + w, w, h, pixelMap);
+			d = getChecked(x + h, y + w + w + h + h, w, h, pixelMap);
+			
+			b = getChecked(x + h + w, y + h, h, w, pixelMap);
+			c = getChecked(x + h + w, y + w + w + h, h, w, pixelMap);
+			
+			e = getChecked(x, y + w + w + h, h, w, pixelMap);
+			f = getChecked(x, y + h, h, w, pixelMap);
+						
+			digit[i] = decodeSevenSegment(a, b, c, d, e, f, g);
+			x = x + (h * 3) + w; 
+		}
+		
+		result = Integer.toString(digit[0]) + Integer.toString(digit[1]);
+		
+		return result;
+	}
+	
+	private String getMatch(byte[][] pixelMap, int[] config)
+	{
+		String result = "";
+
+		int w = config[2];
+		int h = config[3];
+		int x = config[0];
+		int y = config[1];
+		int a, b, c, d, e, f, g;
+		int digit[] = new int[2];
+		
+		for(int i = 0; i < 2; i++)
+		{
+			a = getChecked(x + h, y, w, h, pixelMap);
+			g = getChecked(x + h, y + h + w, w, h, pixelMap);
+			d = getChecked(x + h, y + w + w + h + h, w, h, pixelMap);
+			
+			b = getChecked(x + h + w, y + h, h, w, pixelMap);
+			c = getChecked(x + h + w, y + w + w + h, h, w, pixelMap);
+			
+			e = getChecked(x, y + w + w + h, h, w, pixelMap);
+			f = getChecked(x, y + h, h, w, pixelMap);
+						
+			digit[i] = decodeSevenSegment(a, b, c, d, e, f, g);
+			x = x + (h * 3) + w; 
+		}
+		
+		result = Integer.toString(digit[0]) + Integer.toString(digit[1]);
+		
+		return result;
 	}
 	
 	/**
