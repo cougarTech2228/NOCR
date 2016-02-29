@@ -623,7 +623,7 @@ public class Scouting
 			}
 		}
 
-		if((double) sigma / area > 0.1)
+		if((double) sigma / area > 0.25)
 		{
 			return 1;
 		}
