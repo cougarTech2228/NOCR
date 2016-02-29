@@ -146,7 +146,7 @@ public class Scouting
 		int x = config[0];
 		int y = config[1];
 		int a, b, c, d, e, f, g;
-		int digit[] = new int[4];
+		int digit[] = new int[4];		
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -155,16 +155,16 @@ public class Scouting
 			d = getChecked(x + h, y + w + w + h + h, w, h, pixelMap);
 			
 			b = getChecked(x + h + w, y + h, h, w, pixelMap);
-			c = getChecked(x + h + w, y + w + w + h, h, w, pixelMap);
+			c = getChecked(x + h + w, y + w + h + h, h, w, pixelMap);
 			
-			e = getChecked(x, y + w + w + h, h, w, pixelMap);
-			f = getChecked(x, y + h, h, w, pixelMap);
-						
+			e = getChecked(x, y + w + h + h, h, w, pixelMap);
+			f = getChecked(x, y + h, h, w, pixelMap);			
+			
 			digit[i] = decodeSevenSegment(a, b, c, d, e, f, g);
 			x = x + (h * 3) + w; 
 		}
 		
-		result = Integer.toString(digit[0]) + Integer.toString(digit[1]);
+		result = Integer.toString(digit[0]) + Integer.toString(digit[1]) + Integer.toString(digit[2]) + Integer.toString(digit[3]);
 		
 		return result;
 	}
@@ -187,10 +187,10 @@ public class Scouting
 			d = getChecked(x + h, y + w + w + h + h, w, h, pixelMap);
 			
 			b = getChecked(x + h + w, y + h, h, w, pixelMap);
-			c = getChecked(x + h + w, y + w + w + h, h, w, pixelMap);
+			c = getChecked(x + h + w, y + w + h + h, h, w, pixelMap);
 			
-			e = getChecked(x, y + w + w + h, h, w, pixelMap);
-			f = getChecked(x, y + h, h, w, pixelMap);
+			e = getChecked(x, y + w + h + h, h, w, pixelMap);
+			f = getChecked(x, y + h, h, w, pixelMap);	
 						
 			digit[i] = decodeSevenSegment(a, b, c, d, e, f, g);
 			x = x + (h * 3) + w; 
@@ -613,15 +613,15 @@ public class Scouting
 		long sigma = 0;
 
 		//Sums up the amount of black pixels
-		for(int xSample = x; xSample < x + w; xSample++)
+		for(int xSample = x; xSample < x + w - 1; xSample++)
 		{
-			for(int ySample = y; ySample < y + h; ySample++)
+			for(int ySample = y; ySample < y + h - 1; ySample++)
 			{
 				sigma += pixelMap[xSample][ySample];
 			}
 		}
 
-		if((double) sigma / area > 0.3)
+		if((double) sigma / area > 0.1)
 		{
 			return 1;
 		}
@@ -681,9 +681,16 @@ public class Scouting
 
 		for(String aFileList : fileList)
 		{
-			if(aFileList.substring(aFileList.length() - 4).equalsIgnoreCase(".png"))
+			try
 			{
-				sheetFiles.add(aFileList);
+				if(aFileList.substring(aFileList.length() - 4).equalsIgnoreCase(".png"))
+				{
+					sheetFiles.add(aFileList);
+				}
+			}
+			catch(StringIndexOutOfBoundsException ex)
+			{
+				//If file name is not a png and very short, then just blow past the exception
 			}
 		}
 
