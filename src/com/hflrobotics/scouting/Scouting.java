@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import org.jdom2.DataConversionException;
+
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
 import com.google.zxing.NotFoundException;
@@ -81,7 +83,7 @@ public class Scouting
 		handler.getBaseLine(file, config.fileSettings.get(6), config.imageBaseline);
 	}
 	
-	public void extractPit() throws IOException, NotFoundException
+	public void extractPit() throws IOException, NotFoundException, DataConversionException
 	{
 		loadFromConfig();
 		ArrayList<String> availableSheets = getSheetFiles(config.fileSettings.get(3));
@@ -100,6 +102,8 @@ public class Scouting
 			csvWriter.writeNext(getDataset(config.pitCriteria, sheetValues, team, null), false);
 			csvWriter.close();
 			
+			config.loadPitConfig();
+			
 			extractCropSection(img, pixelMap, config.pitCropout, config.fileSettings.get(4));
 			
 			// Renames image to scan ID and move image to scanned directory
@@ -108,7 +112,7 @@ public class Scouting
 		}
 	}
 	
-	public void extractMatch() throws IOException, NotFoundException
+	public void extractMatch() throws IOException, NotFoundException, DataConversionException
 	{
 		loadFromConfig();
 		ArrayList<String> availableSheets = getSheetFiles(config.fileSettings.get(0));
@@ -128,6 +132,8 @@ public class Scouting
 			
 			csvWriter.writeNext(getDataset(config.matchCriteria, sheetValues, team, match), false);
 			csvWriter.close();
+			
+			config.loadMatchConfig();
 			
 			extractCropSection(img, pixelMap, config.matchCropout, config.fileSettings.get(1));
 			
@@ -293,6 +299,7 @@ public class Scouting
 			switch(aCropSection[6])
 			{
 				case "HAS_VALUE":
+					System.out.println("--");
 					if(getChecked(Integer.valueOf(aCropSection[1]),	Integer.valueOf(aCropSection[2]), 
 							Integer.valueOf(aCropSection[3]), Integer.valueOf(aCropSection[4]),	map) == 1)
 					{
@@ -305,11 +312,12 @@ public class Scouting
 								Integer.valueOf(aCropSection[4]));
 						
 						//Write a sub image of the original to the directory
-						ImageIO.write(img, aCropSection[5], output);
+						ImageIO.write(img, "png", output);
 					}
 					break;
 					
 				default:
+					System.out.println("-");
 					File output = new File(outputDir + aCropSection[0]);
 					output.createNewFile();
 
@@ -319,7 +327,7 @@ public class Scouting
 							Integer.valueOf(aCropSection[4]));
 					
 					//Write a sub image of the original to the directory
-					ImageIO.write(img, aCropSection[5], output);
+					ImageIO.write(img, "png", output);
 					break;
 			}	
 		}

@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import org.jdom2.DataConversionException;
+
 import com.google.zxing.NotFoundException;
 
 import javax.swing.JList;
@@ -52,7 +54,7 @@ public class GUI extends JFrame
 				try
 				{
 					scouting.extractMatch();
-				} catch (NotFoundException | IOException e1)
+				} catch (NotFoundException | IOException | DataConversionException e1)
 				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -85,7 +87,7 @@ public class GUI extends JFrame
 				try
 				{
 					scouting.extractPit();
-				} catch (NotFoundException | IOException e)
+				} catch (NotFoundException | IOException | DataConversionException e)
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();

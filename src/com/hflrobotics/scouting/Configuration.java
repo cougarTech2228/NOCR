@@ -117,7 +117,7 @@ public class Configuration
 	 * Loads match data from the config.xml and stores it into global variables
 	 * @throws DataConversionException
 	 */
-	private void loadMatchConfig() throws DataConversionException
+	public void loadMatchConfig() throws DataConversionException
 	{
 		Element root = doc.getRootElement().getChild("match");
 		matchRegions.clear();
@@ -177,7 +177,7 @@ public class Configuration
 	 * Loads pit data from the config.xml and stores it into global variables
 	 * @throws DataConversionException
 	 */
-	private void loadPitConfig() throws DataConversionException
+	public void loadPitConfig() throws DataConversionException
 	{
 		Element root = doc.getRootElement().getChild("pit");
 		pitRegions.clear();
