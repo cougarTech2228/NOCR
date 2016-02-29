@@ -101,10 +101,8 @@ public class Scouting
 			
 			csvWriter.writeNext(getDataset(config.pitCriteria, sheetValues, team, null), false);
 			csvWriter.close();
-			
-			config.loadPitConfig();
-			
-			extractCropSection(img, pixelMap, config.pitCropout, config.fileSettings.get(4));
+					
+			extractCropSection(img, pixelMap, config.pitCropout, config.fileSettings.get(4) + team + "_");
 			
 			// Renames image to scan ID and move image to scanned directory
 			File scanned = new File(config.fileSettings.get(4) + team + ".png");
@@ -133,9 +131,7 @@ public class Scouting
 			csvWriter.writeNext(getDataset(config.matchCriteria, sheetValues, team, match), false);
 			csvWriter.close();
 			
-			config.loadMatchConfig();
-			
-			extractCropSection(img, pixelMap, config.matchCropout, config.fileSettings.get(1));
+			extractCropSection(img, pixelMap, config.matchCropout, config.fileSettings.get(1) + team + "_" + match + "_");
 			
 			// Renames image to scan ID and move image to scanned directory
 			File scanned = new File(config.fileSettings.get(1) + team + "_" + match + ".png");
@@ -296,10 +292,9 @@ public class Scouting
 	{
 		for(String[] aCropSection : cropSection)
 		{
-			switch(aCropSection[6])
+			switch(aCropSection[7])
 			{
 				case "HAS_VALUE":
-					System.out.println("--");
 					if(getChecked(Integer.valueOf(aCropSection[1]),	Integer.valueOf(aCropSection[2]), 
 							Integer.valueOf(aCropSection[3]), Integer.valueOf(aCropSection[4]),	map) == 1)
 					{
@@ -317,7 +312,6 @@ public class Scouting
 					break;
 					
 				default:
-					System.out.println("-");
 					File output = new File(outputDir + aCropSection[0]);
 					output.createNewFile();
 
