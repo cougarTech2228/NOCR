@@ -134,7 +134,7 @@ public class Scouting
 			// Renames image to scan ID and move image to scanned directory
 			File scanned = new File(config.fileSettings.get(1) + team + "_" + match + ".png");
 			Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		}	
+		}
 	}
 	
 	private String getTeam(byte[][] pixelMap, int[] config)
@@ -148,7 +148,7 @@ public class Scouting
 		int a, b, c, d, e, f, g;
 		int digit[] = new int[4];
 		
-		for(int i = 0; i < 2; i++)
+		for(int i = 0; i < 4; i++)
 		{
 			a = getChecked(x + h, y, w, h, pixelMap);
 			g = getChecked(x + h, y + h + w, w, h, pixelMap);
