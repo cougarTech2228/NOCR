@@ -73,6 +73,7 @@ public class Scouting
 	{
 		loadFromConfig();
 		config.loadScanConfig();
+		// TODO change config scan settings to be a return
 		scanner.scanToDir(config.fileSettings.get(0), 0, config.scanSettings);
 	}
 	

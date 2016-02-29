@@ -14,7 +14,7 @@ import org.jdom2.input.SAXBuilder;
 public class Configuration
 {
 	Document doc;
-	int regionSize;
+	
 	public int matchWidth = 0;
 	public int matchHeight = 0;
 	public int[] matchTeam = new int[4];
