@@ -22,35 +22,6 @@ public class Scouting
 	ScannerInteface scanner = new ScannerInteface();
 	Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting/config.xml");
 	ImageHandler handler = new ImageHandler();
-	
-	// x, y, w, h
-	int[][] sampleRegion =
-	{
-			{ 1, 1, 5, 5 },
-			{ 1, 10, 5, 5 },
-			{ 1, 19, 5, 5 },
-			{ 10, 1, 5, 5 },
-			{ 10, 10, 5, 5 },
-			{ 10, 19, 5, 5 },
-			{ 19, 1, 5, 5 },
-			{ 19, 10, 5, 5 },
-			{ 19, 19, 5, 5 } };
-
-	// itemLocation, type
-	String[][] directoryConfig =
-	{
-			{ "/pitToBeScanned", "dir" },
-			{ "/pitScanned", "dir" },
-			{ "/matchToBeScanned", "dir" },
-			{ "/matchScanned", "dir" },
-			{ "/pitData.csv", "csv" },
-			{ "/matchData.csv", "csv" } };
-
-	// fileName, x, y, w, h
-	String[][] cropSection =
-	{ 
-			{"comment", "10", "10", "5", "5"}, 
-			{"comment2", "19", "19", "5", "5"} };
 
 	public static void main(String[] args)
 	{
@@ -65,34 +36,31 @@ public class Scouting
 	public void scanPit()
 	{
 		loadFromConfig();
-		config.loadScanConfig();
-		scanner.scanToDir(config.fileSettings.get(3), 0, config.scanSettings);
+		scanner.scanToDir(config.getFileSettings().get(3), 0, config.loadScanConfig());
 	}
 	
 	public void scanMatch()
 	{
 		loadFromConfig();
-		config.loadScanConfig();
-		// TODO change config scan settings to be a return
-		scanner.scanToDir(config.fileSettings.get(0), 0, config.scanSettings);
+		scanner.scanToDir(config.getFileSettings().get(0), 0, config.loadScanConfig());
 	}
 	
 	public void getBaseline() throws NotFoundException, IOException
 	{
 		loadFromConfig();
-		File file = new File(config.fileSettings.get(6) + "baseline.png");
-		handler.getBaseLine(file, config.fileSettings.get(6), config.imageBaseline);
+		File file = new File(config.getFileSettings().get(6) + "baseline.png");
+		handler.getBaseLine(file, config.getFileSettings().get(6), config.imageBaseline);
 	}
 	
 	public void extractPit() throws IOException, NotFoundException, DataConversionException
 	{
 		loadFromConfig();
-		ArrayList<String> availableSheets = getSheetFiles(config.fileSettings.get(3));
+		ArrayList<String> availableSheets = getSheetFiles(config.getFileSettings().get(3));
 		
 		for(String sheet : availableSheets)
 		{
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.fileSettings.get(5), true));
-			File toBeScanned = new File(config.fileSettings.get(3) + sheet);
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.getFileSettings().get(5), true));
+			File toBeScanned = new File(config.getFileSettings().get(3) + sheet);
 			BufferedImage img = ImageIO.read(toBeScanned);
 			img = handler.manipulateImage(img, config.imageBaseline);
 			
@@ -103,10 +71,10 @@ public class Scouting
 			csvWriter.writeNext(getDataset(config.pitCriteria, sheetValues, team, null), false);
 			csvWriter.close();
 					
-			extractCropSection(img, pixelMap, config.pitCropout, config.fileSettings.get(4) + team + "_");
+			extractCropSection(img, pixelMap, config.pitCropout, config.getFileSettings().get(4) + team + "_");
 			
 			// Renames image to scan ID and move image to scanned directory
-			File scanned = new File(config.fileSettings.get(4) + team + ".png");
+			File scanned = new File(config.getFileSettings().get(4) + team + ".png");
 			Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
@@ -114,12 +82,12 @@ public class Scouting
 	public void extractMatch() throws IOException, NotFoundException, DataConversionException
 	{
 		loadFromConfig();
-		ArrayList<String> availableSheets = getSheetFiles(config.fileSettings.get(0));
+		ArrayList<String> availableSheets = getSheetFiles(config.getFileSettings().get(0));
 				
 		for(String sheet : availableSheets)
 		{
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.fileSettings.get(2), true));
-			File toBeScanned = new File(config.fileSettings.get(0) + sheet);
+			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.getFileSettings().get(2), true));
+			File toBeScanned = new File(config.getFileSettings().get(0) + sheet);
 			BufferedImage img = ImageIO.read(toBeScanned);
 			
 			img = handler.manipulateImage(img, config.imageBaseline);
@@ -132,10 +100,10 @@ public class Scouting
 			csvWriter.writeNext(getDataset(config.matchCriteria, sheetValues, team, match), false);
 			csvWriter.close();
 			
-			extractCropSection(img, pixelMap, config.matchCropout, config.fileSettings.get(1) + team + "_" + match + "_");
+			extractCropSection(img, pixelMap, config.matchCropout, config.getFileSettings().get(1) + team + "_" + match + "_");
 			
 			// Renames image to scan ID and move image to scanned directory
-			File scanned = new File(config.fileSettings.get(1) + team + "_" + match + ".png");
+			File scanned = new File(config.getFileSettings().get(1) + team + "_" + match + ".png");
 			Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
@@ -362,7 +330,7 @@ public class Scouting
 	 * @param baseDir
 	 * @return true-baseDir is setup false-baseDir is not setup
 	 */
-	private boolean directorySetup(String baseDir)
+	private boolean directorySetup(String baseDir, String[][] directoryConfig)
 	{
 		boolean result = true;
 
@@ -386,7 +354,7 @@ public class Scouting
 	 * 
 	 * @param baseDir
 	 */
-	private void setupDirectory(String baseDir)
+	private void setupDirectory(String baseDir, String[][] directoryConfig)
 	{
 		for(String[] aDirectoryConfig : directoryConfig)
 		{
@@ -439,11 +407,11 @@ public class Scouting
 			switch(splitExpression[0].toLowerCase())
 			{
 				case "sum":
-					result = verifyRegionSet(splitExpression[1]);
+					result = verifyRegionSet(splitExpression[1], null);
 					break;
 
 				case "value":
-					result = verifyRegion(splitExpression[1]);
+					result = verifyRegion(splitExpression[1], null);
 					break;
 
 				case "select":
@@ -473,7 +441,7 @@ public class Scouting
 	 * @param regionSet specific regionSet
 	 * @return whether regionSet is valid
 	 */
-	private boolean verifyRegionSet(String regionSet)
+	private boolean verifyRegionSet(String regionSet, int[][] sampleRegion)
 	{
 		boolean result = true;
 
@@ -500,7 +468,7 @@ public class Scouting
 	 * @param region specific region
 	 * @return whether region is valid
 	 */
-	private boolean verifyRegion(String region)
+	private boolean verifyRegion(String region, int[][] sampleRegion)
 	{
 		boolean result = false;
 

@@ -29,9 +29,7 @@ public class Configuration
 	public ArrayList<Integer[]> pitRegions = new ArrayList<Integer[]>(0);
 	public ArrayList<String[]> pitCriteria = new ArrayList<String[]>(0);
 	public ArrayList<String[]> pitCropout = new ArrayList<String[]>(0);
-	
-	public ArrayList<String> scanSettings = new ArrayList<String>(0);
-	public ArrayList<String> fileSettings = new ArrayList<String>(0);
+
 	public double[]	imageBaseline = new double[7];
 	
 	public Configuration(String configLocation)
@@ -60,7 +58,6 @@ public class Configuration
 			loadMatchConfig();
 			loadPitConfig();			
 			loadBaselineConfig();
-			loadFileConfig();
 		} 
 		catch (DataConversionException e)
 		{
@@ -72,10 +69,10 @@ public class Configuration
 	 * Loads baseline data from the config.xml and stores it into global variables
 	 * @throws DataConversionException
 	 */
-	private void loadFileConfig()
+	public ArrayList<String> getFileSettings()
 	{
+		ArrayList<String> fileSettings = new ArrayList<String>(0);
 		Element root = doc.getRootElement().getChild("files");
-		scanSettings.clear();
 		fileSettings.add(root.getChild("matchToBeScanned").getValue());
 		fileSettings.add(root.getChild("matchScanned").getValue());
 		fileSettings.add(root.getChild("matchData").getValue());
@@ -83,6 +80,8 @@ public class Configuration
 		fileSettings.add(root.getChild("pitScanned").getValue());
 		fileSettings.add(root.getChild("pitData").getValue());
 		fileSettings.add(root.getChild("baseline").getValue());
+		
+		return fileSettings;
 	}
 	
 	/**
@@ -103,14 +102,16 @@ public class Configuration
 	/**
 	 * Loads scan data from the config.xml and stores it into global variables
 	 */
-	public void loadScanConfig()
+	public ArrayList<String> loadScanConfig()
 	{
+		ArrayList<String> result = new ArrayList<String>(0);
 		Element root = doc.getRootElement().getChild("scan");
-		scanSettings.clear();
-		scanSettings.add(root.getChildText("scanner"));
-		scanSettings.add(root.getChildText("resolution"));
-		scanSettings.add(root.getChildText("width"));
-		scanSettings.add(root.getChildText("height"));
+		result.add(root.getChildText("scanner"));
+		result.add(root.getChildText("resolution"));
+		result.add(root.getChildText("width"));
+		result.add(root.getChildText("height"));
+		
+		return result;
 	}
 	
 	/**
