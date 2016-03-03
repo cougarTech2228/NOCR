@@ -27,34 +27,25 @@ public class Scouting
 	{
 		GUI gui = new GUI();
 	}
-
-	private void loadFromConfig()
-	{
-		config.load();
-	}
 	
 	public void scanPit()
 	{
-		loadFromConfig();
-		scanner.scanToDir(config.getFileSettings().get(3), 0, config.loadScanConfig());
+		scanner.scanToDir(config.getFileSettings().get(3), 0, config.getScanConfig());
 	}
 	
 	public void scanMatch()
 	{
-		loadFromConfig();
-		scanner.scanToDir(config.getFileSettings().get(0), 0, config.loadScanConfig());
+		scanner.scanToDir(config.getFileSettings().get(0), 0, config.getScanConfig());
 	}
 	
 	public void getBaseline() throws NotFoundException, IOException
 	{
-		loadFromConfig();
 		File file = new File(config.getFileSettings().get(6) + "baseline.png");
-		handler.getBaseLine(file, config.getFileSettings().get(6), config.imageBaseline);
+		handler.getBaseLine(file, config.getFileSettings().get(6), config.getImageBaseline());
 	}
 	
 	public void extractPit() throws IOException, NotFoundException, DataConversionException
 	{
-		loadFromConfig();
 		ArrayList<String> availableSheets = getSheetFiles(config.getFileSettings().get(3));
 		
 		for(String sheet : availableSheets)
@@ -62,16 +53,16 @@ public class Scouting
 			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.getFileSettings().get(5), true));
 			File toBeScanned = new File(config.getFileSettings().get(3) + sheet);
 			BufferedImage img = ImageIO.read(toBeScanned);
-			img = handler.manipulateImage(img, config.imageBaseline);
+			img = handler.manipulateImage(img, config.getImageBaseline());
 			
 			byte[][] pixelMap = getPixelMap(img);
-			int[] sheetValues = getSheetValues(config.pitRegions, config.pitHeight, config.pitWidth, pixelMap);
-			String team = getTeam(pixelMap, config.pitTeam);
+			int[] sheetValues = getSheetValues(config.getPitRegions(), config.getPitHeight(), config.getPitWidth(), pixelMap);
+			String team = getTeam(pixelMap, config.getPitTeam());
 			
-			csvWriter.writeNext(getDataset(config.pitCriteria, sheetValues, team, null), false);
+			csvWriter.writeNext(getDataset(config.getPitCriteria(), sheetValues, team, null), false);
 			csvWriter.close();
 					
-			extractCropSection(img, pixelMap, config.pitCropout, config.getFileSettings().get(4) + team + "_");
+			extractCropSection(img, pixelMap, config.getPitCropout(), config.getFileSettings().get(4) + team + "_");
 			
 			// Renames image to scan ID and move image to scanned directory
 			File scanned = new File(config.getFileSettings().get(4) + team + ".png");
@@ -81,7 +72,6 @@ public class Scouting
 	
 	public void extractMatch() throws IOException, NotFoundException, DataConversionException
 	{
-		loadFromConfig();
 		ArrayList<String> availableSheets = getSheetFiles(config.getFileSettings().get(0));
 				
 		for(String sheet : availableSheets)
@@ -90,17 +80,17 @@ public class Scouting
 			File toBeScanned = new File(config.getFileSettings().get(0) + sheet);
 			BufferedImage img = ImageIO.read(toBeScanned);
 			
-			img = handler.manipulateImage(img, config.imageBaseline);
+			img = handler.manipulateImage(img, config.getImageBaseline());
 			
 			byte[][] pixelMap = getPixelMap(img);
-			int[] sheetValues = getSheetValues(config.matchRegions, config.matchHeight, config.matchWidth, pixelMap);
-			String team = getTeam(pixelMap, config.matchTeam);
-			String match = getMatch(pixelMap, config.matchMatch);			
+			int[] sheetValues = getSheetValues(config.getMatchRegions(), config.getMatchHeight(), config.getMatchWidth(), pixelMap);
+			String team = getTeam(pixelMap, config.getMatchTeam());
+			String match = getMatch(pixelMap, config.getMatchMatch());			
 			
-			csvWriter.writeNext(getDataset(config.matchCriteria, sheetValues, team, match), false);
+			csvWriter.writeNext(getDataset(config.getMatchCriteria(), sheetValues, team, match), false);
 			csvWriter.close();
 			
-			extractCropSection(img, pixelMap, config.matchCropout, config.getFileSettings().get(1) + team + "_" + match + "_");
+			extractCropSection(img, pixelMap, config.getMatchCropout(), config.getFileSettings().get(1) + team + "_" + match + "_");
 			
 			// Renames image to scan ID and move image to scanned directory
 			File scanned = new File(config.getFileSettings().get(1) + team + "_" + match + ".png");
@@ -261,7 +251,7 @@ public class Scouting
 	{
 		for(String[] aCropSection : cropSection)
 		{
-			switch(aCropSection[7])
+			switch(aCropSection[6])
 			{
 				case "HAS_VALUE":
 					if(getChecked(Integer.valueOf(aCropSection[1]),	Integer.valueOf(aCropSection[2]), 
