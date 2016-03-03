@@ -12,8 +12,6 @@ import javax.imageio.ImageIO;
 
 import org.jdom2.DataConversionException;
 
-import com.google.zxing.ChecksumException;
-import com.google.zxing.FormatException;
 import com.google.zxing.NotFoundException;
 import com.opencsv.CSVWriter;
 
@@ -26,24 +24,51 @@ public class Scouting
 	public static void main(String[] args)
 	{
 		GUI gui = new GUI();
+		gui.makeVisible();
 	}
 	
+	/**
+	 * Runs the scanner if paper is present and stores the images into the specified directory
+	 */
 	public void scanPit()
 	{
 		scanner.scanToDir(config.getFileSettings().get(3), 0, config.getScanConfig());
 	}
 	
+	/**
+	 * Runs the scanner if paper is present and stores the images into the specified directory
+	 */
 	public void scanMatch()
 	{
 		scanner.scanToDir(config.getFileSettings().get(0), 0, config.getScanConfig());
 	}
 	
+	/**
+	 * Grabs the baseline.png from the baseline folder and looks for the QR codes and then renames the file with
+	 * the needed information for the config
+	 * @throws NotFoundException
+	 * @throws IOException
+	 */
 	public void getBaseline() throws NotFoundException, IOException
 	{
 		File file = new File(config.getFileSettings().get(6) + "baseline.png");
 		handler.getBaseLine(file, config.getFileSettings().get(6), config.getImageBaseline());
 	}
 	
+	/**
+	 * Multi-step process for extracting data
+	 * 1. Get all available png files in the directory
+	 * 2. Manipulate the image to be accurate to the baseline
+	 * 3. Get a pixel map of the image
+	 * 4. Extract the sheet values from the pixel map
+	 * 5. Using the sheet values construct a CSV line based on the criteria
+	 * 6. Write the data to the CSV file
+	 * 7. Check and crop any necessary sections
+	 * 8. Rename the file and place it in the specifed folder
+	 * @throws IOException
+	 * @throws NotFoundException
+	 * @throws DataConversionException
+	 */
 	public void extractPit() throws IOException, NotFoundException, DataConversionException
 	{
 		ArrayList<String> availableSheets = getSheetFiles(config.getFileSettings().get(3));
@@ -70,6 +95,20 @@ public class Scouting
 		}
 	}
 	
+	/**
+	 * Multi-step process for extracting data
+	 * 1. Get all available png files in the directory
+	 * 2. Manipulate the image to be accurate to the baseline
+	 * 3. Get a pixel map of the image
+	 * 4. Extract the sheet values from the pixel map
+	 * 5. Using the sheet values construct a CSV line based on the criteria
+	 * 6. Write the data to the CSV file
+	 * 7. Check and crop any necessary sections
+	 * 8. Rename the file and place it in the specifed folder
+	 * @throws IOException
+	 * @throws NotFoundException
+	 * @throws DataConversionException
+	 */
 	public void extractMatch() throws IOException, NotFoundException, DataConversionException
 	{
 		ArrayList<String> availableSheets = getSheetFiles(config.getFileSettings().get(0));
@@ -98,6 +137,12 @@ public class Scouting
 		}
 	}
 	
+	/**
+	 * Iterate through the pixel map to extract the seven segment display type image
+	 * @param pixelMap map of the image to iterate through
+	 * @param config specifeis x, y, w, h of the upper left of the team
+	 * @return formated string of the result
+	 */
 	private String getTeam(byte[][] pixelMap, int[] config)
 	{
 		String result = "";
@@ -130,6 +175,12 @@ public class Scouting
 		return result;
 	}
 	
+	/**
+	 * Iterate through the pixel map to extract the seven segment display type image
+	 * @param pixelMap map of the image to iterate through
+	 * @param config specifeis x, y, w, h of the upper left of the team
+	 * @return formated string of the result
+	 */
 	private String getMatch(byte[][] pixelMap, int[] config)
 	{
 		String result = "";

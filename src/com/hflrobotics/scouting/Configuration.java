@@ -3,7 +3,6 @@ package com.hflrobotics.scouting;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.jdom2.DataConversionException;
 import org.jdom2.Document;
@@ -28,7 +27,7 @@ public class Configuration
 			e.printStackTrace();
 		}
 	}
-	
+
 	public ArrayList<Integer[]> getPitRegions() throws DataConversionException
 	{
 		Element root = doc.getRootElement().getChild("pit");

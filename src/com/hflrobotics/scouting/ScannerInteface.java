@@ -11,7 +11,6 @@ import eu.gnome.morena.Configuration;
 import eu.gnome.morena.Device;
 import eu.gnome.morena.Manager;
 import eu.gnome.morena.Scanner;
-import javaxt.io.Image;
 
 public class ScannerInteface
 {
@@ -21,18 +20,10 @@ public class ScannerInteface
 	
 	public ScannerInteface()
 	{
-		//Fix problem with HP OfficeJet scanners referring to themselves as cameras
+		//Fixes problem with HP OfficeJet scanners referring to themselves as cameras
 		Configuration.addDeviceType(".*fficejet.*", true);
 		manager = Manager.getInstance();
 		devices = manager.listDevices();
-	}
-
-	/**
-	 * Do not use in production
-	 */
-	public void testFunc()
-	{
-
 	}
 
 	/**
