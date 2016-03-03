@@ -51,8 +51,6 @@ public class Configuration
 	 */
 	public void load()
 	{
-		loadScanConfig();
-		
 		try
 		{
 			loadMatchConfig();
