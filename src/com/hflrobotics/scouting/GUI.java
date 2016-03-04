@@ -41,7 +41,7 @@ public class GUI extends JFrame
 		setTitle("Scouting");
 		setType(Type.NORMAL);
 		setResizable(false);
-		setSize(256, 222);
+		setSize(256, 197);
 		/*try
 		{
 			setIconImage(ImageIO.read(new File("C:/Users/cougartech/Desktop/icon.png")));
@@ -97,11 +97,6 @@ public class GUI extends JFrame
 		
 		btnExtract.setBounds(10, 79, 225, 56);
 		layeredPane.add(btnExtract);
-		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(10, 146, 225, 17);
-		layeredPane.add(lblNewLabel);
 		
 		JLayeredPane layeredPane_1 = new JLayeredPane();
 		tabbedPane.addTab("Pit", null, layeredPane_1, null);
@@ -161,7 +156,7 @@ public class GUI extends JFrame
 			}
 		});
 		
-		btnNewButton_1.setBounds(10, 11, 225, 148);
+		btnNewButton_1.setBounds(10, 11, 225, 119);
 		layeredPane_2.add(btnNewButton_1);
 		
 		JLayeredPane layeredPane_3 = new JLayeredPane();
@@ -182,7 +177,7 @@ public class GUI extends JFrame
 		list.setSelectedIndex(0);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setBackground(SystemColor.menu);
-		list.setBounds(10, 11, 225, 110);
+		list.setBounds(10, 11, 225, 85);
 		layeredPane_3.add(list);
 		
 		JButton btnNewButton_2 = new JButton("Refresh");
@@ -193,7 +188,7 @@ public class GUI extends JFrame
 				scouting.refreshScannerList();
 			}
 		});
-		btnNewButton_2.setBounds(146, 132, 89, 23);
+		btnNewButton_2.setBounds(146, 107, 89, 23);
 		layeredPane_3.add(btnNewButton_2);
 	}
 	

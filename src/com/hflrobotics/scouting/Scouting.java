@@ -2,6 +2,7 @@ package com.hflrobotics.scouting;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import org.jdom2.DataConversionException;
+import org.jdom2.JDOMException;
 
 import com.google.zxing.NotFoundException;
 import com.opencsv.CSVWriter;
@@ -28,7 +30,14 @@ public class Scouting
 	public static void main(String[] args)
 	{
 		gui.makeVisible();
-		config = new Configuration(gui.promptConfigLocation());
+		try
+		{
+			config = new Configuration(gui.promptConfigLocation());
+		}
+		catch(NullPointerException | JDOMException | IOException ex)
+		{
+			System.exit(0);
+		}
 	}
 	
 	public void refreshScannerList()

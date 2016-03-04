@@ -1,6 +1,7 @@
 package com.hflrobotics.scouting;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -14,18 +15,11 @@ public class Configuration
 {
 	Document doc;
 
-	public Configuration(String configLocation)
+	public Configuration(String configLocation) throws JDOMException, IOException
 	{
 		File configFile = new File(configLocation);
         SAXBuilder saxBuilder = new SAXBuilder();
-        try
-		{
-			doc = saxBuilder.build(configFile);
-		}
-		catch(JDOMException | IOException e)
-		{
-			e.printStackTrace();
-		}
+		doc = saxBuilder.build(configFile);
 	}
 
 	public ArrayList<Integer[]> getPitRegions() throws DataConversionException
