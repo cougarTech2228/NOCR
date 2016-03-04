@@ -17,14 +17,23 @@ import com.opencsv.CSVWriter;
 
 public class Scouting
 {
+	
+	//C:/Users/cougartech/Documents/Scouting/config.xml
+	
+	static GUI gui = new GUI();
 	ScannerInteface scanner = new ScannerInteface();
-	Configuration config = new Configuration("C:/Users/cougartech/Documents/Scouting/config.xml");
+	static Configuration config;
 	ImageHandler handler = new ImageHandler();
 
 	public static void main(String[] args)
 	{
-		GUI gui = new GUI();
 		gui.makeVisible();
+		config = new Configuration(gui.promptConfigLocation());
+	}
+	
+	public void refreshScannerList()
+	{
+		gui.setScannerList(scanner.getScannersArray());
 	}
 	
 	/**
@@ -32,7 +41,7 @@ public class Scouting
 	 */
 	public void scanPit()
 	{
-		scanner.scanToDir(config.getFileSettings().get(3), 0, config.getScanConfig());
+		scanner.scanToDir(config.getFileSettings().get(3), gui.getScannerID(), config.getScanConfig());
 	}
 	
 	/**
@@ -40,7 +49,7 @@ public class Scouting
 	 */
 	public void scanMatch()
 	{
-		scanner.scanToDir(config.getFileSettings().get(0), 0, config.getScanConfig());
+		scanner.scanToDir(config.getFileSettings().get(0), gui.getScannerID(), config.getScanConfig());
 	}
 	
 	/**

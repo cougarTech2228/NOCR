@@ -89,4 +89,23 @@ public class ScannerInteface
 
 		return scanners;
 	}
+	
+	/**
+	 * Gets a list of all the scanners that were detected
+	 * @return all the scanners that were detected
+	 */
+	public String[] getScannersArray()
+	{
+		String[] scanners = new String[devices.size()];
+
+		for(int i = 0; i < devices.size(); i++)
+		{
+			if(devices.get(i) instanceof Scanner)
+			{
+				scanners[i] = devices.get(i).toString();
+			}
+		}
+
+		return scanners;
+	}
 }
