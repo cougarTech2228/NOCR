@@ -4,11 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 import javax.swing.JLayeredPane;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
@@ -34,7 +31,7 @@ public class GUI extends JFrame
 	private static final long serialVersionUID = 1L;
 	Scouting scouting;
 	JList<Object> list;
-	
+
 	public GUI()
 	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -159,7 +156,8 @@ public class GUI extends JFrame
 		
 		list = new JList<Object>();
 		list.setForeground(Color.BLACK);
-		list.setModel(new AbstractListModel() {
+		list.setModel(new AbstractListModel<Object>() {
+			private static final long serialVersionUID = 1L;
 			String[] values = new String[] {};
 			public int getSize() {
 				return values.length;
