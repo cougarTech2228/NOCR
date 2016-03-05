@@ -26,6 +26,7 @@ import java.awt.Color;
 import javax.swing.ListSelectionModel;
 import javax.swing.AbstractListModel;
 import java.awt.SystemColor;
+import java.awt.Toolkit;
 
 public class GUI extends JFrame
 {
@@ -42,14 +43,8 @@ public class GUI extends JFrame
 		setType(Type.NORMAL);
 		setResizable(false);
 		setSize(256, 197);
-		/*try
-		{
-			setIconImage(ImageIO.read(new File("C:/Users/cougartech/Desktop/icon.png")));
-		}
-		catch (IOException e3)
-		{
-			e3.printStackTrace();
-		}*/
+		//setIconImage(ImageIO.read(new File("C:/Users/cougartech/Desktop/icon.jpg")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage("res/icon.jpg"));
 		
 		try
 		{
@@ -222,6 +217,7 @@ public class GUI extends JFrame
 	
 	public String promptConfigLocation()
 	{
+		//	TODO change to file selector
 		JFrame frame = new JFrame();
 		Object result = JOptionPane.showInputDialog(frame, "Config location:");
 		
