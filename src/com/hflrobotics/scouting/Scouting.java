@@ -22,6 +22,7 @@ public class Scouting
 	//C:/Users/cougartech/Documents/Scouting/config.xml
 	
 	static GUI gui = new GUI();
+	static ConfirmGUI confirm = new ConfirmGUI();
 	ScannerInteface scanner = new ScannerInteface();
 	static Configuration config;
 	ImageHandler handler = new ImageHandler();
@@ -29,13 +30,21 @@ public class Scouting
 	public static void main(String[] args)
 	{
 		gui.makeVisible();
-		try
+		/*try
 		{
 			config = new Configuration(gui.promptConfigLocation());
 		}
 		catch(NullPointerException | JDOMException | IOException ex)
 		{
 			System.exit(0);
+		}*/
+		try
+		{
+			config = new Configuration("C:/Users/cougartech/Documents/Scouting/config.xml");
+		} catch (JDOMException | IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -99,15 +108,18 @@ public class Scouting
 			
 			byte[][] pixelMap = getPixelMap(img);
 			int[] sheetValues = getSheetValues(config.getPitRegions(), config.getPitHeight(), config.getPitWidth(), pixelMap);
-			String team = getTeam(pixelMap, config.getPitTeam());
+			//String team = getTeam(pixelMap, config.getPitTeam());
 			
-			csvWriter.writeNext(getDataset(config.getPitCriteria(), sheetValues, team, null), false);
+			String[] dataset = confirm.verifyDataSet(config.getPitCriteria(), getDataset(config.getPitCriteria(), sheetValues, null, null), img);
+			confirm.hideConfirm();
+			
+			csvWriter.writeNext(dataset, false);
 			csvWriter.close();
-					
-			extractCropSection(img, pixelMap, config.getPitCropout(), config.getFileSettings().get(4) + team + "_");
+				
+			extractCropSection(img, pixelMap, config.getPitCropout(), config.getFileSettings().get(4) + dataset[0] + "_");
 			
 			// Renames image to scan ID and move image to scanned directory
-			File scanned = new File(config.getFileSettings().get(4) + team + ".png");
+			File scanned = new File(config.getFileSettings().get(4) + dataset[0] + ".png");
 			Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
@@ -140,16 +152,19 @@ public class Scouting
 			
 			byte[][] pixelMap = getPixelMap(img);
 			int[] sheetValues = getSheetValues(config.getMatchRegions(), config.getMatchHeight(), config.getMatchWidth(), pixelMap);
-			String team = getTeam(pixelMap, config.getMatchTeam());
-			String match = getMatch(pixelMap, config.getMatchMatch());			
+			//String team = getTeam(pixelMap, config.getMatchTeam());
+			//String match = getMatch(pixelMap, config.getMatchMatch());			
 			
-			csvWriter.writeNext(getDataset(config.getMatchCriteria(), sheetValues, team, match), false);
+			String[] dataset = confirm.verifyDataSet(config.getMatchCriteria(), getDataset(config.getMatchCriteria(), sheetValues, null, null), img);
+			confirm.hideConfirm();
+			
+			csvWriter.writeNext(dataset, false);
 			csvWriter.close();
 			
-			extractCropSection(img, pixelMap, config.getMatchCropout(), config.getFileSettings().get(1) + team + "_" + match + "_");
+			extractCropSection(img, pixelMap, config.getMatchCropout(), config.getFileSettings().get(1) + dataset[0] + "_" + dataset[1] + "_");
 			
 			// Renames image to scan ID and move image to scanned directory
-			File scanned = new File(config.getFileSettings().get(1) + team + "_" + match + ".png");
+			File scanned = new File(config.getFileSettings().get(1) + dataset[0] + "_" + dataset[1] + ".png");
 			Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
@@ -266,18 +281,25 @@ public class Scouting
 
 					for(int ii = 0; ii < summationComponents.length; ii++)
 					{
-						result[i] += Integer.valueOf(sheetValues[Integer.valueOf(summationComponents[ii])]);
-					}					
+						if(ii == 0)
+						{
+							result[i] = Integer.toString(sheetValues[Integer.valueOf(summationComponents[ii])]);
+						}
+						else
+						{
+							result[i] = Integer.toString(Integer.valueOf(result[i]) + Integer.valueOf(sheetValues[Integer.valueOf(summationComponents[ii])]));
+						}
+					}		
 					break;
 					
 				case "VALUE":
 					if(sheetValues[Integer.valueOf(exp[1])] == 1)
 					{
-						result[i] = "yes";
+						result[i] = "1";
 					}
 					else
 					{
-						result[i] = "no";
+						result[i] = "0";
 					}					
 					break;
 					
