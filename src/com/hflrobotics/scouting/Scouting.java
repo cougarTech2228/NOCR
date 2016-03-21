@@ -110,7 +110,7 @@ public class Scouting
 			int[] sheetValues = getSheetValues(config.getPitRegions(), config.getPitHeight(), config.getPitWidth(), pixelMap);
 			//String team = getTeam(pixelMap, config.getPitTeam());
 			
-			String[] dataset = confirm.verifyDataSet(config.getPitCriteria(), getDataset(config.getPitCriteria(), sheetValues, null, null), img);
+			String[] dataset = confirm.verifyDataSet(config.getPitCriteria(), getDataset(config.getPitCriteria(), sheetValues, null, null), img, "pit");
 			confirm.hideConfirm();
 			
 			csvWriter.writeNext(dataset, false);
@@ -155,7 +155,7 @@ public class Scouting
 			//String team = getTeam(pixelMap, config.getMatchTeam());
 			//String match = getMatch(pixelMap, config.getMatchMatch());			
 			
-			String[] dataset = confirm.verifyDataSet(config.getMatchCriteria(), getDataset(config.getMatchCriteria(), sheetValues, null, null), img);
+			String[] dataset = confirm.verifyDataSet(config.getMatchCriteria(), getDataset(config.getMatchCriteria(), sheetValues, null, null), img, "match");
 			confirm.hideConfirm();
 			
 			csvWriter.writeNext(dataset, false);
@@ -269,11 +269,11 @@ public class Scouting
 					break;
 				
 				case "TEAM":
-					result[i] = team;
+					result[i] = (team != null ? team : "");
 					break;
 					
 				case "MATCH":
-					result[i] = match;
+					result[i] = (match != null ? match : "");
 					break;
 					
 				case "SUM":

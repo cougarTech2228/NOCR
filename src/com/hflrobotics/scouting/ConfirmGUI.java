@@ -76,7 +76,7 @@ public class ConfirmGUI extends JFrame
 		getContentPane().add(panel, BorderLayout.CENTER);
 	}
 	
-	public String[] verifyDataSet(ArrayList<String[]> config, String[] data, BufferedImage img)
+	public String[] verifyDataSet(ArrayList<String[]> config, String[] data, BufferedImage img, String type)
 	{
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
@@ -108,11 +108,45 @@ public class ConfirmGUI extends JFrame
 		
 		table.setModel(dtm);
 		panel.add(label);
-				
+		
+		String result = "";
+		String dataConfirm = "";
 		JFrame frame = new JFrame();
 		frame.setTitle("Verify");
+		
+		switch(type)
+		{
+			case "pit":
+				for(int i = 0; i < data.length; i++)
+				{
+					dataConfirm += data[i] + ",";
+					
+					if(i == 0 || i == 4 || i == 6 || i == 10 || i == 13 || i == 17 || i == 22)
+					{
+						result += JOptionPane.showInputDialog(frame, "Verify", dataConfirm);
+						dataConfirm = "";
+					}
+				}				
 				
-		return ((String) JOptionPane.showInputDialog(frame, "Verify", dataToBeChecked)).split(",");
+				return result.split(",");
+				
+			case "match":				
+				for(int i = 0; i < data.length; i++)
+				{
+					dataConfirm += data[i] + ",";
+					
+					if(i == 3 || i == 6 || i == 10 || i == 18 || i == 24 || i == 27 || i == 30)
+					{
+						result += JOptionPane.showInputDialog(frame, "Verify", dataConfirm);
+						dataConfirm = "";
+					}
+				}				
+				
+				return result.split(",");
+				
+			default:
+				return null;
+		}
 	}
 
 	public void hideConfirm()
