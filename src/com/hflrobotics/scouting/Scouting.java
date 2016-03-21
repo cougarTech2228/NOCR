@@ -2,6 +2,7 @@ package com.hflrobotics.scouting;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,6 +10,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import org.jdom2.DataConversionException;
 import org.jdom2.JDOMException;
@@ -58,7 +61,15 @@ public class Scouting
 	 */
 	public void scanPit()
 	{
+		try
+		{
 		scanner.scanToDir(config.getFileSettings().get(3), gui.getScannerID(), config.getScanConfig());
+		}
+		catch(ArrayIndexOutOfBoundsException ex)
+		{
+			JFrame frame = new JFrame();
+			JOptionPane.showMessageDialog(frame, "Please select a scanner.");
+		}
 	}
 	
 	/**
@@ -66,7 +77,15 @@ public class Scouting
 	 */
 	public void scanMatch()
 	{
-		scanner.scanToDir(config.getFileSettings().get(0), gui.getScannerID(), config.getScanConfig());
+		try
+		{
+			scanner.scanToDir(config.getFileSettings().get(0), gui.getScannerID(), config.getScanConfig());
+		}
+		catch(ArrayIndexOutOfBoundsException ex)
+		{
+			JFrame frame = new JFrame();
+			JOptionPane.showMessageDialog(frame, "Please select a scanner.");
+		}
 	}
 	
 	/**
@@ -101,26 +120,34 @@ public class Scouting
 		
 		for(String sheet : availableSheets)
 		{
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.getFileSettings().get(5), true));
-			File toBeScanned = new File(config.getFileSettings().get(3) + sheet);
-			BufferedImage img = ImageIO.read(toBeScanned);
-			img = handler.manipulateImage(img, config.getImageBaseline());
-			
-			byte[][] pixelMap = getPixelMap(img);
-			int[] sheetValues = getSheetValues(config.getPitRegions(), config.getPitHeight(), config.getPitWidth(), pixelMap);
-			//String team = getTeam(pixelMap, config.getPitTeam());
-			
-			String[] dataset = confirm.verifyDataSet(config.getPitCriteria(), getDataset(config.getPitCriteria(), sheetValues, null, null), img, "pit");
-			confirm.hideConfirm();
-			
-			csvWriter.writeNext(dataset, false);
-			csvWriter.close();
+			try
+			{
+				CSVWriter csvWriter = new CSVWriter(new FileWriter(config.getFileSettings().get(5), true));
+				File toBeScanned = new File(config.getFileSettings().get(3) + sheet);
+				BufferedImage img = ImageIO.read(toBeScanned);
+				img = handler.manipulateImage(img, config.getImageBaseline());
 				
-			extractCropSection(img, pixelMap, config.getPitCropout(), config.getFileSettings().get(4) + dataset[0] + "_");
-			
-			// Renames image to scan ID and move image to scanned directory
-			File scanned = new File(config.getFileSettings().get(4) + dataset[0] + ".png");
-			Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				byte[][] pixelMap = getPixelMap(img);
+				int[] sheetValues = getSheetValues(config.getPitRegions(), config.getPitHeight(), config.getPitWidth(), pixelMap);
+				//String team = getTeam(pixelMap, config.getPitTeam());
+				
+				String[] dataset = confirm.verifyDataSet(config.getPitCriteria(), getDataset(config.getPitCriteria(), sheetValues, null, null), img, "pit");
+				confirm.hideConfirm();
+				
+				csvWriter.writeNext(dataset, false);
+				csvWriter.close();
+					
+				extractCropSection(img, pixelMap, config.getPitCropout(), config.getFileSettings().get(4) + dataset[0] + "_");
+				
+				// Renames image to scan ID and move image to scanned directory
+				File scanned = new File(config.getFileSettings().get(4) + dataset[0] + ".png");
+				Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			}
+			catch(FileNotFoundException ex)
+			{
+				JFrame frame = new JFrame();
+				JOptionPane.showMessageDialog(frame, "Close the data file.");
+			}			
 		}
 	}
 	
@@ -144,28 +171,36 @@ public class Scouting
 				
 		for(String sheet : availableSheets)
 		{
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(config.getFileSettings().get(2), true));
-			File toBeScanned = new File(config.getFileSettings().get(0) + sheet);
-			BufferedImage img = ImageIO.read(toBeScanned);
-			
-			img = handler.manipulateImage(img, config.getImageBaseline());
-			
-			byte[][] pixelMap = getPixelMap(img);
-			int[] sheetValues = getSheetValues(config.getMatchRegions(), config.getMatchHeight(), config.getMatchWidth(), pixelMap);
-			//String team = getTeam(pixelMap, config.getMatchTeam());
-			//String match = getMatch(pixelMap, config.getMatchMatch());			
-			
-			String[] dataset = confirm.verifyDataSet(config.getMatchCriteria(), getDataset(config.getMatchCriteria(), sheetValues, null, null), img, "match");
-			confirm.hideConfirm();
-			
-			csvWriter.writeNext(dataset, false);
-			csvWriter.close();
-			
-			extractCropSection(img, pixelMap, config.getMatchCropout(), config.getFileSettings().get(1) + dataset[0] + "_" + dataset[1] + "_");
-			
-			// Renames image to scan ID and move image to scanned directory
-			File scanned = new File(config.getFileSettings().get(1) + dataset[0] + "_" + dataset[1] + ".png");
-			Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			try
+			{
+				CSVWriter csvWriter = new CSVWriter(new FileWriter(config.getFileSettings().get(2), true));
+				File toBeScanned = new File(config.getFileSettings().get(0) + sheet);
+				BufferedImage img = ImageIO.read(toBeScanned);
+				
+				img = handler.manipulateImage(img, config.getImageBaseline());
+				
+				byte[][] pixelMap = getPixelMap(img);
+				int[] sheetValues = getSheetValues(config.getMatchRegions(), config.getMatchHeight(), config.getMatchWidth(), pixelMap);
+				//String team = getTeam(pixelMap, config.getMatchTeam());
+				//String match = getMatch(pixelMap, config.getMatchMatch());			
+				
+				String[] dataset = confirm.verifyDataSet(config.getMatchCriteria(), getDataset(config.getMatchCriteria(), sheetValues, null, null), img, "match");
+				confirm.hideConfirm();
+				
+				csvWriter.writeNext(dataset, false);
+				csvWriter.close();
+				
+				extractCropSection(img, pixelMap, config.getMatchCropout(), config.getFileSettings().get(1) + dataset[0] + "_" + dataset[1] + "_");
+				
+				// Renames image to scan ID and move image to scanned directory
+				File scanned = new File(config.getFileSettings().get(1) + dataset[0] + "_" + dataset[1] + ".png");
+				Files.move(toBeScanned.toPath(), scanned.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			}
+			catch(FileNotFoundException ex)
+			{
+				JFrame frame = new JFrame();
+				JOptionPane.showMessageDialog(frame, "Close the data file.");
+			}
 		}
 	}
 	
