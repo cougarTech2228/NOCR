@@ -136,7 +136,7 @@ public class ConfirmGUI extends JFrame
 				{
 					dataConfirm += data[i] + ",";
 					
-					if(i == 3 || i == 6 || i == 10 || i == 18 || i == 24 || i == 27 || i == 30 || i == 31)
+					if(i == 1 || i == 4 || i == 8 || i == 16 || i == 22 || i == 25 || i == 28 || i == 29)
 					{
 						result += JOptionPane.showInputDialog(frame, "Verify", dataConfirm);
 						dataConfirm = "";
